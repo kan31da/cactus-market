@@ -1,0 +1,12 @@
+.btn.border-secondary {
+    transition: 0.5s;
+}
+
+.btn.border-secondary:hover {
+    background: var(--bs-secondary) !important;
+    color: var(--bs-white) !important;
+}
+
+.container.py-5.text-center {
+    margin-top: 152px !important;
+}
