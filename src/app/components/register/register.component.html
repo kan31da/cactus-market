@@ -4,27 +4,56 @@
             <div class="col-lg-6">
                 <h1>Register</h1>
 
-                @if (errorMessage) {
-                <div class="error">{{ errorMessage }}</div>
-                }
+                <div *ngIf="errorMessage" class="error mat-form-field">{{ errorMessage }}</div>
 
                 <form [formGroup]="form" (ngSubmit)="onSubmit()">
                     <div>
-                        <input type="text" placeholder="Username" formControlName="username" />
+                        <input type="text" placeholder="Username" formControlName="username" name="username"
+                            id="username" />
+                        <div *ngIf="form.get('username')?.invalid && (form.get('username')?.touched || form.get('username')?.dirty)"
+                            class="text-danger">
+                            Username is required and must be at least {{ userNamedMinLength }} characters long.
+                        </div>
                     </div>
+
                     <div>
                         <input type="text" placeholder="Email" formControlName="email" />
+                        <div *ngIf="form.get('email')?.invalid && (form.get('email')?.touched || form.get('email')?.dirty)"
+                            class="text-danger">
+                            Valid email is required.
+                        </div>
                     </div>
-                    <div>
-                        <input type="password" placeholder="Password" formControlName="password" />
+
+                    <div formGroupName="passGroup">
+                        <div>
+                            <input type="password" placeholder="Password" formControlName="password" name="password"
+                                id="password" />
+                            <div *ngIf="form.get('passGroup.password')?.invalid && (form.get('passGroup.password')?.touched || form.get('passGroup.password')?.dirty)"
+                                class="text-danger">
+                                Password is required and must be at least {{ passwordMinLength }} characters long.
+                            </div>
+                        </div>
+                        <div>
+                            <input type="password" placeholder="Confirm Password" formControlName="rePassword"
+                                name="rePassword" id="rePassword" />
+                            <div *ngIf="form.get('passGroup.rePassword')?.invalid && (form.get('passGroup.rePassword')?.touched || form.get('passGroup.rePassword')?.dirty)"
+                                class="text-danger">
+                                Password is required and must be at least {{ passwordMinLength }} characters long.
+                            </div>              
+                            <div *ngIf="form.get('passGroup')?.hasError('matchPasswordsValidator') && (form.get('passGroup.rePassword')?.touched || form.get('passGroup.rePassword')?.dirty)"
+                                class="text-danger">
+                                Passwords do not match.
+                            </div>
+                        </div>
                     </div>
+
                     <div>
-                        <button class="btn border-secondary py-2 px-4 rounded-pill text-primary" type="submit">Sign
-                            Up</button>
+                        <button class="btn border-secondary py-2 px-4 rounded-pill text-primary" type="submit"
+                            [disabled]="form.invalid">Sign Up</button>
                     </div>
                 </form>
-                <a class="btn border-secondary py-2 px-4 rounded-pill text-primary" routerLink="/login">Go To
-                    Login</a>
+
+                <a class="btn border-secondary py-2 px-4 rounded-pill text-primary" routerLink="/login">Go To Login</a>
             </div>
         </div>
     </div>
