@@ -1,0 +1,31 @@
+<div class="container-fluid py-5">
+    <div class="container py-5 text-center">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <h1>Register</h1>
+
+                @if (errorMessage) {
+                <div class="error">{{ errorMessage }}</div>
+                }
+
+                <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                    <div>
+                        <input type="text" placeholder="Username" formControlName="username" />
+                    </div>
+                    <div>
+                        <input type="text" placeholder="Email" formControlName="email" />
+                    </div>
+                    <div>
+                        <input type="password" placeholder="Password" formControlName="password" />
+                    </div>
+                    <div>
+                        <button class="btn border-secondary py-2 px-4 rounded-pill text-primary" type="submit">Sign
+                            Up</button>
+                    </div>
+                </form>
+                <a class="btn border-secondary py-2 px-4 rounded-pill text-primary" routerLink="/login">Go To
+                    Login</a>
+            </div>
+        </div>
+    </div>
+</div>

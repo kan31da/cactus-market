@@ -10,3 +10,9 @@
     background: var(--bs-secondary) !important;
     color: var(--bs-white) !important;
 }
+
+
+.error {
+    color: white;
+    background-color: red;
+}
