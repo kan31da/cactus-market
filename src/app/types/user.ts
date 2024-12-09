@@ -1,12 +1,14 @@
 import { Cactus } from "./cactus";
+import { Cart } from "./cart";
 
 export interface User {
-    email: string;
-    username: string;   
-    cactuses: Cactus[];
     _id: string;
+    email: string;
+    username: string;
+    cactuses: Cactus[];
+    cart: Cart;
 }
 
 export interface UserForAuth {
-    email: string;     
+    email: string;
 }

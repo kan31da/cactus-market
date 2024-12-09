@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
@@ -23,11 +23,11 @@ export class AppComponent implements OnInit {
     // authService = inject(AuthService);
 
     ngOnInit(): void {
-        this.authService.user$.subscribe((user: any) => {
-            if (user) {
+        this.authService.user$.subscribe((auth: any) => {
+            if (auth) {
                 this.authService.currentUserSig
                     .set({
-                        email: user.email!,                       
+                        email: auth.email!,
                     });
             }
             else {

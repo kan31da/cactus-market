@@ -1,32 +1,30 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { Component, OnInit } from '@angular/core';
 import { matchPasswordsValidator } from '../../utils/match-passwords.validator';
+import { PASSWORD_MIN_LENGTH } from '../../utils/constants';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 import { NgIf } from '@angular/common';
-import { PASSWORD_MIN_LENGTH, USERNAME_MIN_LENGTH } from '../../utils/constants';
-import { User } from '../../types/user';
+import { RouterLink } from '@angular/router';
 import { UserService } from '../../services/user.service';
-import { Cart } from '../../types/cart';
 
 @Component({
-    selector: 'app-register',
+    selector: 'app-profile',
     standalone: true,
-    imports: [ReactiveFormsModule, RouterLink, NgIf],
-    templateUrl: './register.component.html',
-    styleUrl: './register.component.css'
+    imports: [ReactiveFormsModule, NgIf, RouterLink],
+    templateUrl: './profile.component.html',
+    styleUrl: './profile.component.css'
 })
-export class RegisterComponent {
+export class ProfileComponent implements OnInit {
 
     public passwordMinLength = PASSWORD_MIN_LENGTH;
-    public userNamedMinLength = USERNAME_MIN_LENGTH;
     public form: FormGroup;
     public errorMessage: string | null = null;
+    public successMessage: string | null = null;
+    public changePassword = false;
 
-    constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private userService: UserService) {
+    constructor(private fb: FormBuilder, private authService: AuthService, private userService: UserService) {
+
         this.form = this.fb.nonNullable.group({
-            username: ['', [Validators.required, Validators.minLength(USERNAME_MIN_LENGTH)]],
-            email: ['', [Validators.required, Validators.email]],
             passGroup: this.fb.group({
                 password: ['', [
                     Validators.required,
@@ -39,21 +37,33 @@ export class RegisterComponent {
         });
     }
 
+    username: string | undefined;
+
+    get email(): string {
+        return this.authService.currentUserSig()?.email || '';
+    }
+
+    ngOnInit(): void {
+        this.userService.getUserByEmail(this.email).subscribe((userList) => {
+            if (userList && userList.length > 0) {
+                this.username = userList[0].username;
+            }
+        });
+    }
+
     onSubmit(): void {
+
         if (this.form.invalid) {
             this.errorMessage = 'Please fill in all required fields.';
             return;
         }
         else {
-
             const rawForm = this.form.getRawValue();
-            this.authService.register(rawForm.email, rawForm.username, rawForm.passGroup.password)
+            this.authService.updatePassword(rawForm.passGroup.password)
                 .subscribe({
                     next: () => {
-                        const cart: Cart = { cactuses: [], _id: '' }
-                        const user: User = { email: rawForm.email, username: rawForm.username, cactuses: [], cart: cart, _id: '' };
-                        this.userService.createUser(user);
-                        this.router.navigateByUrl('/');
+                        this.successMessage = 'Password change successful.'
+                        this.changePassword = true;
                     },
                     error: (err) => {
                         this.errorMessage = err.code;

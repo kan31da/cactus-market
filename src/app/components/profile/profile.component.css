@@ -2,21 +2,6 @@
     margin-top: 152px !important;
 }
 
-.btn.border-secondary {
-    transition: 0.5s;
-}
-
-.btn.border-secondary:hover {
-    background: var(--bs-secondary) !important;
-    color: var(--bs-white) !important;
-}
-
-
-.error {
-    color: white;
-    background-color: red;
-}
-
 
 
 .profile-container {

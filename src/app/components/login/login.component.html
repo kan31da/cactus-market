@@ -1,35 +1,60 @@
 <div class="container-fluid py-5">
     <div class="container py-5 text-center">
         <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <h1>Login</h1>
-                <div *ngIf="errorMessage" class="error mat-form-field">{{ errorMessage }}</div>
+            <div class="profile-container">
+                <div class="profile-header">
+                    <h2>Login</h2>
+                    <p>Sign in to your account</p>
+                </div>
 
-                <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                <div *ngIf="errorMessage" class="error">
+                    {{ errorMessage }}
+                </div>
+
+                <form [formGroup]="form" (ngSubmit)="onSubmit()" class="profile-form">
                     <div>
-                        <input type="text" placeholder="Email" formControlName="email" />
-                        <div *ngIf="form.get('email')?.invalid && (form.get('email')?.touched || form.get('email')?.dirty)"
+                        <label for="email">Email</label>
+                        <input 
+                            type="text" 
+                            placeholder="Email" 
+                            formControlName="email" 
+                            name="email" />
+                        <div *ngIf="form.get('email')?.invalid && (form.get('email')?.touched || form.get('email')?.dirty)" 
                             class="text-danger">
                             Email is required.
                         </div>
                     </div>
 
                     <div>
-                        <input type="password" placeholder="Password" formControlName="password" />
-                        <div *ngIf="form.get('password')?.invalid && (form.get('password')?.touched || form.get('password')?.dirty)"
+                        <label for="password">Password</label>
+                        <input 
+                            type="password" 
+                            placeholder="Password" 
+                            formControlName="password" 
+                            name="password" />
+                        <div *ngIf="form.get('password')?.invalid && (form.get('password')?.touched || form.get('password')?.dirty)" 
                             class="text-danger">
                             Password is required.
                         </div>
                     </div>
 
-                    <div>
-                        <button class="btn border-secondary py-2 px-4 rounded-pill text-primary" type="submit"
-                            [disabled]="form.invalid">Sign In</button>
+                                        <div>
+                        <button 
+                            type="submit" 
+                            class="btn" 
+                            [disabled]="form.invalid">
+                            Sign In
+                        </button>
                     </div>
                 </form>
-
-                <a class="btn border-secondary py-2 px-4 rounded-pill text-primary" routerLink="/register">Go To
-                    Register</a>
+                
+                <div class="mt-3">
+                    <a 
+                        class="btn cancel-btn" 
+                        routerLink="/register">
+                        Go To Register
+                    </a>
+                </div>
             </div>
         </div>
     </div>

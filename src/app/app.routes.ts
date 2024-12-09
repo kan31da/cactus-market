@@ -6,10 +6,13 @@ import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
 import { AuthGuard, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
 import { ErrorMsgComponent } from './components/error-msg/error-msg.component';
+import { ProfileComponent } from './components/profile/profile.component';
+import { MyCactusesComponent } from './components/my-cactuses/my-cactuses.component';
+import { DetailsComponent } from './components/details/details.component';
+import { AddCactusComponent } from './components/add-cactus/add-cactus.component';
 
 
-const redirectUnauthorizedToLanding = () => redirectUnauthorizedTo(['auth', 'login']);
-
+const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 const redirectLoggedInToHome = () => redirectLoggedInTo(['home']);
 
 export const routes: Routes = [
@@ -24,9 +27,6 @@ export const routes: Routes = [
         component: RegisterComponent,
         canActivate: [AuthGuard],
         data: { authGuardPipe: redirectLoggedInToHome }
-
-        // canActivate: [AuthGuard],
-        // data: { authGuardPipe: redirectUnauthorizedToLanding }
     },
     {
         path: 'login',
@@ -34,19 +34,43 @@ export const routes: Routes = [
         canActivate: [AuthGuard],
         data: { authGuardPipe: redirectLoggedInToHome }
 
-        // canActivate: [AuthGuard],
-        // data: { authGuardPipe: redirectUnauthorizedToLanding }
     },
-
-    //SHOP  
     {
-        path: 'shop', children: [
-            { path: '', component: ShopComponent },
-            // { path: ':cactusId', component:  }
-        ],
-
-        // canActivate: [AuthGuard]
+        path: 'profile',
+        component: ProfileComponent,
+        canActivate: [AuthGuard],
+        data: { authGuardPipe: redirectUnauthorizedToLogin }
     },
+
+    //CACTUSES
+    {
+        path: 'shop',
+        component: ShopComponent
+    },
+    {
+        path: 'my-cactuses',
+        component: MyCactusesComponent,
+        canActivate: [AuthGuard],
+        data: { authGuardPipe: redirectUnauthorizedToLogin }
+    },
+    {
+        // path: 'add-cactus',
+        // component: AddCactusComponent,
+        // canActivate: [AuthGuard],
+        // data: { authGuardPipe: redirectUnauthorizedToLogin }
+
+        path: 'add-cactus', children: [
+            { path: '', component: AddCactusComponent, },
+            { path: ':cactusId', component: AddCactusComponent, }
+        ],
+        canActivate: [AuthGuard],
+        data: { authGuardPipe: redirectUnauthorizedToLogin }
+    },
+    {
+        path: 'details/:cactusId',
+        component: DetailsComponent
+    },
+
 
     //ERROR    
     { path: 'error', component: ErrorMsgComponent },

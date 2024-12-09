@@ -1,0 +1,27 @@
+.container.py-5.text-center {
+    margin-top: 152px !important;
+}
+
+.btn.border-secondary {
+    transition: 0.5s;
+}
+
+.btn.border-secondary:hover {
+    background: var(--bs-secondary) !important;
+    color: var(--bs-white) !important;
+}
+
+
+.error {
+    color: white;
+    background-color: red;
+}
+
+.page-header {
+    position: relative;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(/tco_hero_image.jpg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-top: 152px !important;
+}
