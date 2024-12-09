@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { UserService } from '../../services/user.service';
+import { User } from '../../types/user';
 
 @Component({
     selector: 'app-profile',
@@ -36,6 +37,10 @@ export class ProfileComponent implements OnInit {
             )
         });
     }
+
+    // get user(): User | null {
+    //     return this.userService.userData;
+    // }
 
     username: string | undefined;
 

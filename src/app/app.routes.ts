@@ -54,11 +54,6 @@ export const routes: Routes = [
         data: { authGuardPipe: redirectUnauthorizedToLogin }
     },
     {
-        // path: 'add-cactus',
-        // component: AddCactusComponent,
-        // canActivate: [AuthGuard],
-        // data: { authGuardPipe: redirectUnauthorizedToLogin }
-
         path: 'add-cactus', children: [
             { path: '', component: AddCactusComponent, },
             { path: ':cactusId', component: AddCactusComponent, }
@@ -70,7 +65,6 @@ export const routes: Routes = [
         path: 'details/:cactusId',
         component: DetailsComponent
     },
-
 
     //ERROR    
     { path: 'error', component: ErrorMsgComponent },

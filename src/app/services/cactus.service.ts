@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { collection, collectionData, deleteDoc, doc, Firestore, getDoc, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
 import { Cactus } from '../types/cactus';
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'

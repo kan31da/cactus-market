@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { NgIf } from '@angular/common';
+import { UserService } from '../../services/user.service';
 
 @Component({
     selector: 'app-login',
@@ -13,12 +14,9 @@ import { NgIf } from '@angular/common';
 })
 export class LoginComponent {
 
-    constructor(private authService: AuthService, private router: Router) { }
+    constructor(private authService: AuthService, private userService: UserService, private router: Router) { }
 
     fb = inject(FormBuilder);
-    // authService = inject(AuthService);    
-    // router = inject(Router);
-
     public form = this.fb.nonNullable.group({
         email: ['', [Validators.required, Validators.email]],
         password: ['', Validators.required],
@@ -33,17 +31,26 @@ export class LoginComponent {
             return;
         }
         else {
-
             const rawForm = this.form.getRawValue();
             this.authService.login(rawForm.email, rawForm.password)
                 .subscribe({
                     next: () => {
+                        this.userService.subscribeUser(rawForm.email);
                         this.router.navigateByUrl('/');
                     },
                     error: (err) => {
-                        this.errorMessage = err.code;
+                        this.errorMessage = this.mapErrorCodeToMessage(err.code);
                     }
                 });
         }
+    }
+
+    private mapErrorCodeToMessage(code: string): string {
+        const errorMessages: { [key: string]: string } = {
+            'auth/invalid-email': 'Invalid email format.',
+            'auth/user-not-found': 'User not found.',
+            'auth/wrong-password': 'Incorrect password.',
+        };
+        return errorMessages[code] || 'An unexpected error occurred. Please try again.';
     }
 }

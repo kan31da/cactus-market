@@ -1,21 +1,56 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { User } from '../types/user';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, tap } from 'rxjs';
 import { collection, collectionData, deleteDoc, doc, Firestore, getDoc, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
 
 @Injectable({
     providedIn: 'root'
 })
-export class UserService {
-    // users: User[] = [];
+export class UserService implements OnDestroy {
+
+    private user$$ = new BehaviorSubject<User | null>(null);
+    private user$ = this.user$$.asObservable();
+    private userSubscription: Subscription | null = null;
+    private user: User | null = null;
+
+    get userData(): User | null {
+        return this.user;
+    }
 
     private usersCollectionName = 'users';
 
-    constructor(private firestore: Firestore) { }
+    constructor(private firestore: Firestore) {
+        this.userSubscription = this.user$.subscribe((user) => {
+            this.user = user;
+        });
+    }
+
+    subscribeUser(email: string) {
+        this.unsubscribeUser();
+        this.getUserByEmail(email).subscribe((userList) => {
+            if (userList && userList.length > 0) {
+                this.user$$.next(userList[0]);
+                this.user = userList[0];
+            }
+            else {
+                this.user$$.next(null);
+                this.user = null;
+            }
+        });
+    }
+
+    unsubscribeUser() {
+        if (this.userSubscription) {
+            this.userSubscription.unsubscribe();
+            this.userSubscription = null;
+        }
+        this.user = null;
+        this.user$$.next(null);
+    }
 
     async createUser(user: User): Promise<void> {
         const usersCollection = collection(this.firestore, this.usersCollectionName);
-        const userRef = doc(usersCollection); 
+        const userRef = doc(usersCollection);
         await setDoc(userRef, {
             ...user,
             _id: userRef.id,
@@ -47,5 +82,10 @@ export class UserService {
     async deleteUser(userId: string): Promise<void> {
         const userDocRef = doc(this.firestore, `${this.usersCollectionName}/${userId}`);
         await deleteDoc(userDocRef);
+    }
+
+    ngOnDestroy(): void {
+        this.user = null;
+        this.userSubscription?.unsubscribe();
     }
 }
