@@ -7,6 +7,8 @@ import { NgClass, NgFor } from '@angular/common';
 import { CACTUSES_PER_PAGE } from '../../utils/constants';
 import { UserService } from '../../services/user.service';
 import { ToastrService } from 'ngx-toastr';
+import { User } from '../../types/user';
+import { generateRandomId } from '../../utils/generate-id';
 
 @Component({
     selector: 'app-shop',
@@ -25,7 +27,7 @@ export class ShopComponent {
     constructor(
         private cactusService: CactusService,
         private authService: AuthService,
-        private userService: UserService,       
+        private userService: UserService,
         private toastr: ToastrService) { }
 
     async ngOnInit(): Promise<void> {
@@ -50,16 +52,23 @@ export class ShopComponent {
         const cactus = this.cactuses.find(c => c._id === cactusId);
 
         if (cactus && this.userService.userData?._id !== cactus.userId) {
-            this.userService.userData?.cart.cactuses.push(cactus);
-            this.toastr.success(`Great news! ${cactus.cactusName} has been added to your cart for ${cactus.price} $.`, 'Added to Cart');
+
+            const user: User = { ...this.userService.userData! };
+            user.cart.cactuses.push({ ...cactus, cartCactusId: generateRandomId() });
+            this.userService.updateUser(user._id, user).then(() => {
+                this.userService.updateUserState(user);
+                this.toastr.success(`Great news! ${cactus.cactusName} has been added to your cart for ${cactus.price} $.`, 'Added to Cart');
+
+            }).catch(error => {
+
+                this.toastr.error('Error add cactus: ' + error.message);
+            });
         }
     }
 
     isOwner(cactus: Cactus): boolean {
         return this.userId != null && this.userId === cactus.userId;
     }
-
-
 
     updatePaginatedItems() {
         const startIndex = (this.currentPage - 1) * this.cactusesPerPage;

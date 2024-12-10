@@ -1,0 +1,61 @@
+<div class="container-fluid page-header py-5">
+    <h1 class="text-center text-white display-6">My Cactuses</h1>
+</div>
+
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Products</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Remove Cactus</th>
+                    </tr>
+                </thead>
+                @if (cactuses!.length > 0 ) {
+                <tbody>
+                    @for (cactus of cactuses; track $index) {
+                    <tr>
+                        <th scope="row">
+
+                            <div class="d-flex align-items-center">
+                                <img src={{cactus.image}} class="img-fluid me-5 rounded-circle"
+                                    style="width: 80px; height: 80px;" alt>
+                            </div>
+
+                        </th>
+                        <td>
+                            <a [routerLink]="['/details/' + cactus._id]" class>
+                                <p class="mb-0 mt-4">{{cactus.cactusName}}</p>
+                            </a>
+                        </td>
+                        <td>
+                            <p class="mb-0 mt-4">{{cactus.price.toFixed(2)}} $</p>
+                        </td>
+                        <td>
+                            <button (click)="deleteCactus(cactus.cartCactusId, cactus.cactusName)"
+                                class="btn btn-md rounded-circle bg-light border mt-4">
+                                <i class="fa fa-times text-danger"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+                }@else {
+                <p class="mb-0 mt-4">There are no cactuses in catt.</p>
+                }
+            </table>
+        </div>
+
+        <div class="mt-5">
+            <a routerLink="/add-cactus" class="">
+                <button class="btn border-secondary rounded-pill px-4 py-3 text-primary" type="button">'
+                    Add Cactus
+                </button>
+            </a>
+
+        </div>
+    </div>
+</div>

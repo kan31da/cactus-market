@@ -8,6 +8,8 @@ import { PASSWORD_MIN_LENGTH, USERNAME_MIN_LENGTH } from '../../utils/constants'
 import { User } from '../../types/user';
 import { UserService } from '../../services/user.service';
 import { Cart } from '../../types/cart';
+import { ToastrService } from 'ngx-toastr';
+import { generateRandomId } from '../../utils/generate-id';
 
 @Component({
     selector: 'app-register',
@@ -23,7 +25,13 @@ export class RegisterComponent {
     public form: FormGroup;
     public errorMessage: string | null = null;
 
-    constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private userService: UserService) {
+    constructor(
+        private fb: FormBuilder,
+        private authService: AuthService,
+        private router: Router,
+        private userService: UserService,
+        private toastr: ToastrService) {
+
         this.form = this.fb.nonNullable.group({
             username: ['', [Validators.required, Validators.minLength(USERNAME_MIN_LENGTH)]],
             email: ['', [Validators.required, Validators.email]],
@@ -50,10 +58,12 @@ export class RegisterComponent {
             this.authService.register(rawForm.email, rawForm.username, rawForm.passGroup.password)
                 .subscribe({
                     next: () => {
-                        const cart: Cart = { cactuses: [], _id: '' }
-                        const user: User = { email: rawForm.email, username: rawForm.username, cactuses: [], cart: cart, _id: '' };
-                        this.userService.createUser(user);
-                        this.router.navigateByUrl('/');
+                        const cart: Cart = { cactuses: [], _id: generateRandomId() }
+                        const user: User = { email: rawForm.email, username: rawForm.username, cactuses: [], cart: cart, _id: rawForm.email };
+                        this.userService.createUser(user).then(() => {
+                            this.toastr.success(`Welcome, "${rawForm.username}"! Your registration was successful.`, 'Registration Successful!');
+                            this.router.navigateByUrl('/');
+                        });
                     },
                     error: (err) => {
                         this.errorMessage = err.code;

@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { NgIf } from '@angular/common';
 import { UserService } from '../../services/user.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-login',
@@ -14,7 +15,11 @@ import { UserService } from '../../services/user.service';
 })
 export class LoginComponent {
 
-    constructor(private authService: AuthService, private userService: UserService, private router: Router) { }
+    constructor(
+        private authService: AuthService,
+        private userService: UserService,
+        private router: Router,
+        private toastr: ToastrService) { }
 
     fb = inject(FormBuilder);
     public form = this.fb.nonNullable.group({
@@ -36,6 +41,7 @@ export class LoginComponent {
                 .subscribe({
                     next: () => {
                         this.userService.subscribeUser(rawForm.email);
+                        this.toastr.info(`You have successfully logged in as "${rawForm.email}".`, 'Login Successful!');
                         this.router.navigateByUrl('/');
                     },
                     error: (err) => {

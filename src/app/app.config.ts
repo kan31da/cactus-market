@@ -28,6 +28,6 @@ export const appConfig: ApplicationConfig = {
             progressBar: true,
             progressAnimation: "decreasing",
             closeButton: true,            
-        }),
+        }),     
     ]
 };

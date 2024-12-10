@@ -10,6 +10,8 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { MyCactusesComponent } from './components/my-cactuses/my-cactuses.component';
 import { DetailsComponent } from './components/details/details.component';
 import { AddCactusComponent } from './components/add-cactus/add-cactus.component';
+import { CartComponent } from './components/cart/cart.component';
+import { ContactComponent } from './components/contact/contact.component';
 
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
@@ -20,6 +22,7 @@ export const routes: Routes = [
     //HOME
     { path: '', redirectTo: '/home', pathMatch: 'full' },
     { path: 'home', component: HomeComponent },
+    { path: 'contact', component: ContactComponent },
 
     //USER
     {
@@ -38,6 +41,12 @@ export const routes: Routes = [
     {
         path: 'profile',
         component: ProfileComponent,
+        canActivate: [AuthGuard],
+        data: { authGuardPipe: redirectUnauthorizedToLogin }
+    },
+    {
+        path: 'cart',
+        component: CartComponent,
         canActivate: [AuthGuard],
         data: { authGuardPipe: redirectUnauthorizedToLogin }
     },

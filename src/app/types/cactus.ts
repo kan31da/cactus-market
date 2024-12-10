@@ -1,3 +1,5 @@
+import { Review } from "./review";
+
 export interface Cactus {
     _id: string;
     cactusName: string;
@@ -6,4 +8,6 @@ export interface Cactus {
     image: string;
     price: number;
     userId: string;
+    cartCactusId: string;
+    reviews: Review[]
 }

@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { User } from '../types/user';
-import { BehaviorSubject, Observable, Subscription, tap } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { collection, collectionData, deleteDoc, doc, Firestore, getDoc, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
 
 @Injectable({
@@ -23,6 +23,10 @@ export class UserService implements OnDestroy {
         this.userSubscription = this.user$.subscribe((user) => {
             this.user = user;
         });
+    }
+
+    updateUserState(updatedUser: User): void {
+        this.user$$.next(updatedUser);
     }
 
     subscribeUser(email: string) {

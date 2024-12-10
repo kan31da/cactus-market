@@ -4,14 +4,11 @@
             <div class="top-info ps-2">
                 @if (!isAuth() && user != null ){
                 <small class="me-3">
-                    <a routerLink="/profile"
-                        class="text-white">
+                    <a routerLink="/profile" class="text-white">
                         {{ user.username }}
 
                     </a></small>
-                <small class="me-3"><i
-                        class="fas fa-envelope me-2 text-secondary"></i><a
-                        routerLink="/profile"
+                <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a routerLink="/profile"
                         class="text-white">
 
                         {{ user.email }}
@@ -19,12 +16,9 @@
                 }
             </div>
             <div class="top-link pe-2">
-                <a class="text-white"><small
-                        class="text-white mx-2">Privacy Policy</small>/</a>
-                <a class="text-white"><small
-                        class="text-white mx-2">Terms of Use</small>/</a>
-                <a class="text-white"><small
-                        class="text-white ms-2">Sales and Refunds</small></a>
+                <a class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
+                <a class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
+                <a class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a>
             </div>
         </div>
     </div>
@@ -33,65 +27,54 @@
             <a routerLink="/home" class="navbar-brand">
                 <h1 class="text-primary display-6">CACTUS MARKET</h1>
             </a>
-            <button class="navbar-toggler py-2 px-3" type="button"
-                data-bs-toggle="collapse"
+            <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarCollapse">
                 <span class="fa fa-bars text-primary"></span>
             </button>
             <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                 <div class="navbar-nav mx-auto">
-                    <a routerLink="/home" [class.active]="isActive('/home')"
-                        class="nav-item nav-link active">Home</a>
-                    <a routerLink="/shop" [class.active]="isActive('/shop')"
-                        class="nav-item nav-link">Shop</a>
+                    <a routerLink="/home" [class.active]="isActive('/home')" class="nav-item nav-link active">Home</a>
+                    <a routerLink="/shop" [class.active]="isActive('/shop')" class="nav-item nav-link">Shop</a>
                     <div class="nav-item dropdown">
-                        <a routerLink="/home" class="nav-link dropdown-toggle"
-                            data-bs-toggle="dropdown">Pages</a>
+                        <a routerLink="/home" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                         <div class="dropdown-menu m-0 bg-secondary rounded-0">
-                            <a href="#" class="dropdown-item">Cart</a>
+                            <a routerLink="/cart" class="dropdown-item">Cart</a>
                             <a href="#" class="dropdown-item">Chackout</a>
-                            <a routerLink="/404"
-                                [class.active]="isActive('/404')"
-                                class="dropdown-item">404 Page</a>
-                            <a routerLink="/error"
-                                [class.active]="isActive('/error')"
-                                class="dropdown-item">Error
+                            <a routerLink="/404" [class.active]="isActive('/404')" class="dropdown-item">404 Page</a>
+                            <a routerLink="/error" [class.active]="isActive('/error')" class="dropdown-item">Error
                                 Page</a>
                         </div>
                     </div>
 
-                    @if (isAuth()) {
-                    <a routerLink="/login" [class.active]="isActive('/login')"
-                        class="nav-item nav-link">Login</a>
+                    <a routerLink="/contact" [class.active]="isActive('/contact')" class="nav-item nav-link">Contact</a>
 
-                    <a routerLink="/register"
-                        [class.active]="isActive('/register')"
+                    @if (isAuth()) {
+                    <a routerLink="/login" [class.active]="isActive('/login')" class="nav-item nav-link">Login</a>
+
+                    <a routerLink="/register" [class.active]="isActive('/register')"
                         class="nav-item nav-link">Register</a>
                     }
 
                     @if (!isAuth()) {
-                    <a routerLink="/my-cactuses"
-                        [class.active]="isActive('/my-cactuses')"
-                        class="nav-item nav-link">My Cactuses</a>
+                    <a routerLink="/my-cactuses" [class.active]="isActive('/my-cactuses')" class="nav-item nav-link">My
+                        Cactuses</a>
 
-                    <a (click)="logout()"
-                        [class.active]="isActive('/logout')"
-                        style="cursor: pointer;"
+                    <a (click)="logout()" [class.active]="isActive('/logout')" style="cursor: pointer;"
                         class="nav-item nav-link">Logout</a>
                     }
 
                 </div>
                 @if (!isAuth()) {
                 <div class="d-flex m-3 me-0">
-                    <a href="#" class="position-relative me-4 my-auto">
+                    <a routerLink="/cart" [class.active]="isActive('/cart')"
+                        class="position-relative me-4 my-auto">
                         <i class="fa fa-shopping-bag fa-2x"></i>
                         <span
                             class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
                             style="top: -5px; left: 15px; height: 20px; min-width: 20px;">
                             {{ user?.cart?.cactuses?.length ?? 0 }}</span>
                     </a>
-                    <a routerLink="/profile"
-                        [class.active]="isActive('/profile')" class="my-auto">
+                    <a routerLink="/profile" [class.active]="isActive('/profile')" class="my-auto">
                         <i class="fas fa-user fa-2x"></i>
                     </a>
                 </div>
