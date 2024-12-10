@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { Cactus } from '../../types/cactus';
 import { CactusService } from '../../services/cactus.service';
 import { AuthService } from '../../services/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-my-cactuses',
@@ -17,7 +18,7 @@ export class MyCactusesComponent {
 
     userId: string | null = null;
 
-    constructor(private cactusService: CactusService, private authService: AuthService) { }
+    constructor(private cactusService: CactusService, private authService: AuthService, private toastr: ToastrService) { }
 
     ngOnInit(): void {
 
@@ -30,11 +31,12 @@ export class MyCactusesComponent {
         })
     }
 
-    deleteCactus(cactusId: string) {
+    deleteCactus(cactusId: string, cactusName: string) {
         this.cactusService.deleteCactus(cactusId).then(() => {
             this.cactuses = this.cactuses.filter(x => {
                 return x._id != cactusId;
             })
+            this.toastr.warning(`"${cactusName}" has been removed from your collection.`, 'Cactus Removed!');
         });
     }
 }

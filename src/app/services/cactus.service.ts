@@ -24,9 +24,9 @@ export class CactusService {
         return cactusRef.id;
     }
 
-    getCactusByUserID(userID: string): Observable<Cactus[]> {
+    getCactusByUserID(userId: string): Observable<Cactus[]> {
         const cactusesCollection = collection(this.firestore, this.cactusesCollectionName);
-        const cactusQuery = query(cactusesCollection, where('userID', '==', userID));
+        const cactusQuery = query(cactusesCollection, where('userId', '==', userId));
         return collectionData(cactusQuery, { idField: 'userID' }) as Observable<Cactus[]>;
     }
 

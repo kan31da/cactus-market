@@ -5,6 +5,7 @@ import { NgIf } from '@angular/common';
 import { CactusService } from '../../services/cactus.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-add-cactus',
@@ -21,7 +22,13 @@ export class AddCactusComponent implements OnInit {
     cactusId: string | null = null;
     userId: string | null = null;
 
-    constructor(private fb: FormBuilder, private cactusService: CactusService, private router: Router, private route: ActivatedRoute, private authService: AuthService) {
+    constructor(
+        private fb: FormBuilder,
+        private cactusService: CactusService,
+        private router: Router,
+        private route: ActivatedRoute,
+        private authService: AuthService,
+        private toastr: ToastrService) {
 
         this.cactusForm = this.fb.group({
             cactusName: ['', [Validators.required, Validators.maxLength(50)]],
@@ -66,6 +73,7 @@ export class AddCactusComponent implements OnInit {
 
                 this.cactusService.updateCactus(this.cactusId!, formData)
                     .then(() => {
+                        this.toastr.info(`The price of "${formData.cactusName}" has been updated to $${formData.price}.`, 'Cactus Updated!');
                         this.router.navigate([`details/${this.cactusId}`]);
                     });
             }
@@ -74,6 +82,7 @@ export class AddCactusComponent implements OnInit {
                 formData.userId = this.userId!;
                 this.cactusService.createCactus(formData)
                     .then(cactusId => {
+                        this.toastr.success(`"${formData.cactusName}" has been successfully added at a price of $${formData.price}.`, 'Cactus Added!');
                         this.router.navigate([`details/${cactusId}`]);
                     });
             }
