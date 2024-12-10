@@ -19,7 +19,7 @@ export class AddCactusComponent implements OnInit {
     isEditMode: boolean = false;
     cactus: Cactus | null = null;
     cactusId: string | null = null;
-    userID: string | null = null;
+    userId: string | null = null;
 
     constructor(private fb: FormBuilder, private cactusService: CactusService, private router: Router, private route: ActivatedRoute, private authService: AuthService) {
 
@@ -35,10 +35,10 @@ export class AddCactusComponent implements OnInit {
     async ngOnInit(): Promise<void> {
         this.cactusId = this.route.snapshot.params["cactusId"];
 
-        this.userID = this.authService.currentUserSig()?.email || null;
+        this.userId = this.authService.currentUserSig()?.email || null;
 
         const cactus = await this.cactusService.getCactusById(this.cactusId!);
-        if (cactus && this.userID == cactus.userID) {
+        if (cactus && this.userId == cactus.userId) {
             this.cactus = cactus;
             this.isEditMode = true;
         }
@@ -51,7 +51,7 @@ export class AddCactusComponent implements OnInit {
                 description: this.cactus.description,
                 image: this.cactus.image,
                 price: this.cactus.price,
-                userID: this.cactus.userID,
+                userId: this.cactus.userId,
             });
         }
     }
@@ -71,7 +71,7 @@ export class AddCactusComponent implements OnInit {
             }
             else {
 
-                formData.userID = this.userID!;
+                formData.userId = this.userId!;
                 this.cactusService.createCactus(formData)
                     .then(cactusId => {
                         this.router.navigate([`details/${cactusId}`]);

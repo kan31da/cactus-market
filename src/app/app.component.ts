@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { AuthService } from './services/auth.service';
+import { UserService } from './services/user.service';
 
 @Component({
     selector: 'app-root',
@@ -19,7 +20,7 @@ import { AuthService } from './services/auth.service';
 export class AppComponent implements OnInit {
     title = 'cactus-market';
 
-    constructor(private authService: AuthService) { }//TODO TODO TODO
+    constructor(private authService: AuthService, private userService: UserService) { }
     // authService = inject(AuthService);
 
     ngOnInit(): void {
@@ -29,12 +30,14 @@ export class AppComponent implements OnInit {
                     .set({
                         email: auth.email!,
                     });
+                this.userService.subscribeUser(auth.email);
             }
             else {
                 this.authService.currentUserSig.set(null);
+                this.userService.unsubscribeUser();
             }
 
-            console.log(this.authService.currentUserSig());//TODO TODO TODO
+            console.log(this.authService.currentUserSig());
         });
     }
 }

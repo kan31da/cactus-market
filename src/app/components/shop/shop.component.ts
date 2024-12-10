@@ -1,30 +1,31 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Cactus } from '../../types/cactus';
 import { CactusService } from '../../services/cactus.service';
 import { AuthService } from '../../services/auth.service';
-import { NgFor } from '@angular/common';
+import { NgClass, NgFor } from '@angular/common';
 import { CACTUSES_PER_PAGE } from '../../utils/constants';
+import { UserService } from '../../services/user.service';
 
 @Component({
     selector: 'app-shop',
     standalone: true,
-    imports: [RouterLink, NgFor],
+    imports: [RouterLink, NgFor, NgClass],
     templateUrl: './shop.component.html',
     styleUrl: './shop.component.css'
 })
 export class ShopComponent {
     cactuses: Cactus[] = [];
     paginatedCactuses: Cactus[] = [];
-    userID: string | null = null;
-    cactusesPerPage: number = CACTUSES_PER_PAGE; 
-    currentPage: number = 1;    
+    userId: string | null = null;
+    cactusesPerPage: number = CACTUSES_PER_PAGE;
+    currentPage: number = 1;
 
-    constructor(private cactusService: CactusService, private authService: AuthService) { }
+    constructor(private cactusService: CactusService, private authService: AuthService, private userService: UserService, private router: Router) { }
 
     async ngOnInit(): Promise<void> {
 
-        this.userID = this.authService.currentUserSig()?.email || null;
+        this.userId = this.authService.currentUserSig()?.email || null;
 
         this.cactusService.getCactuses().subscribe((cactuses) => {
             if (cactuses) {
@@ -34,7 +35,23 @@ export class ShopComponent {
         })
     }
 
-    //Add to cart
+    addToCart(cactusId: string) {
+
+        if (this.userId == null) {
+            this.router.navigateByUrl('/login');
+        }
+
+        const cactus = this.cactuses.find(c => c._id === cactusId);
+
+        if (cactus && this.userService.userData?._id !== cactus.userId) {
+            this.userService.userData?.cart.cactuses.push(cactus);
+        }
+    }
+
+    isOwner(cactus: Cactus): boolean {
+        return this.userId != null && this.userId === cactus.userId;
+    }
+
 
 
     updatePaginatedItems() {

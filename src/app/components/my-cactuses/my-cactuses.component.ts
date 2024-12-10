@@ -15,15 +15,15 @@ export class MyCactusesComponent {
 
     cactuses: Cactus[] = [];
 
-    userID: string | null = null;
+    userId: string | null = null;
 
     constructor(private cactusService: CactusService, private authService: AuthService) { }
 
     ngOnInit(): void {
 
-        this.userID = this.authService.currentUserSig()?.email || null;
+        this.userId = this.authService.currentUserSig()?.email || null;
 
-        this.cactusService.getCactusByUserID(this.userID!).subscribe((cactuses) => {
+        this.cactusService.getCactusByUserID(this.userId!).subscribe((cactuses) => {
             if (cactuses) {
                 this.cactuses = cactuses;
             }

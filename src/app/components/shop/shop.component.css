@@ -108,3 +108,10 @@
     background: var(--bs-secondary) !important;
     color: var(--bs-white) !important;
 }
+
+.disabled-link {
+    pointer-events: none;
+    opacity: 0.5;
+    color: gray;
+    background-color: dimgrey;
+}

@@ -22,8 +22,8 @@ export class HeaderComponent {
     }
 
     get user(): User | null {
-        // return this.userService.userData;       
-        return this.authService.currentUserSig() as User
+        return this.userService.userData;       
+        // return this.authService.currentUserSig() as User
     }
 
     isActive(link: string): boolean {
