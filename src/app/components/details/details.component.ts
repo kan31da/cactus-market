@@ -10,7 +10,6 @@ import { User } from '../../types/user';
 import { generateRandomId } from '../../utils/generate-id';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Review } from '../../types/review';
-import { Timestamp } from '@angular/fire/firestore';
 
 @Component({
     selector: 'app-details',

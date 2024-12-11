@@ -77,12 +77,11 @@
                         </div>
                     </div>
                     @if (canAddPost()){
-
                     <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
                         <h4 class="mb-5 fw-bold">Leave a Reply</h4>
                         <div class="row g-4">
                             <div class="col-lg-6">
-                                <div class="border-bottom rounded">
+                                <div class="border-bottom rounded border border-secondary">
                                     <input type="text" formControlName="name" name="name" id="name"
                                         class="form-control border-0 me-4" placeholder="Your Name *">
                                     <div *ngIf="reviewForm.get('name')?.invalid && (reviewForm.get('name')?.touched || reviewForm.get('name')?.dirty)"
@@ -93,7 +92,7 @@
                             </div>
 
                             <div class="col-lg-6">
-                                <div class="border-bottom rounded">
+                                <div class="border-bottom rounded border border-secondary">
                                     <input type="email" formControlName="email" name="email" id="email"
                                         class="form-control border-0" placeholder="Your Email *">
                                     <div *ngIf="reviewForm.get('email')?.invalid && (reviewForm.get('email')?.touched || reviewForm.get('email')?.dirty)"
@@ -104,7 +103,7 @@
                             </div>
 
                             <div class="col-lg-12">
-                                <div class="border-bottom rounded my-4">
+                                <div class="border-bottom rounded my-4 border border-secondary">
                                     <textarea formControlName="review" name="review" id="review"
                                         class="form-control border-0" cols="30" rows="8"
                                         placeholder="Your Review *"></textarea>

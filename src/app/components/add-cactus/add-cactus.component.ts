@@ -67,6 +67,8 @@ export class AddCactusComponent implements OnInit {
         if (this.cactusForm.valid) {
             const formData: Cactus = {
                 ...this.cactusForm.value,
+                reviews: []    , 
+                cartCactusId: '',               
             };
 
             if (this.isEditMode) {

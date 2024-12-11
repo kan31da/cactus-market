@@ -1,0 +1,45 @@
+.container.py-5.text-center {
+    margin-top: 152px !important;
+}
+
+.btn.border-secondary {
+    transition: 0.5s;
+}
+
+.btn.border-secondary:hover {
+    background: var(--bs-secondary) !important;
+    color: var(--bs-white) !important;
+}
+
+
+.error {
+    color: white;
+    background-color: red;
+}
+
+.page-header {
+    position: relative;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(/tco_hero_image.jpg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-top: 152px !important;
+}
+
+
+.container {
+    background-color: #f8f9fa; 
+}
+
+.message-box {
+    text-align: center; 
+    padding: 20px;
+    border-radius: 8px; 
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); 
+    background-color: white; 
+}
+
+.check-out-message {
+    font-size: 1.5rem; 
+    margin-bottom: 20px;
+}
