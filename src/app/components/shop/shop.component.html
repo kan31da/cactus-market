@@ -73,7 +73,7 @@
                     <div class="col-lg-9">
                         <div class="row g-4 justify-content-center">
 
-                            @for (cactus of paginatedCactuses; track $index) {
+                            @for (cactus of paginatedCactuses(); track $index) {
                             <div class="col-md-6 col-lg-6 col-xl-4">
                                 <div class="rounded position-relative fruite-item">
                                     <a [routerLink]="['/details/' + cactus._id]">
@@ -88,7 +88,7 @@
                                         <h4>{{cactus.cactusName}}</h4>
                                         <p>{{cactus.shortDescription}}</p>
                                         <div class="d-flex justify-content-between flex-lg-wrap">
-                                            <p class="text-dark fs-5 fw-bold mb-0">${{cactus.price.toFixed(2)}}🌵</p>
+                                            <p class="text-dark fs-5 fw-bold mb-0">{{cactus.price | currency}}🌵</p>
 
                                             <a (click)="addToCart(cactus._id)"
                                                 [ngClass]="{'disabled-link': isOwner(cactus)}" style="cursor: pointer;"
@@ -105,14 +105,15 @@
 
                             <div class="col-12">
                                 <div class="pagination d-flex justify-content-center mt-5">
-                                    <a class="rounded" (click)="goToPage(1)"
-                                        [class.disabled]="currentPage === 1">&laquo;</a>
-                                    <a class="rounded" *ngFor="let page of [].constructor(totalPages); let i = index"
-                                        (click)="goToPage(i + 1)" [class.active]="currentPage === i + 1">
+                                    <a class="rounded" (click)="goToPage(1)" style="cursor: pointer;"
+                                        [class.disabled]="currentPage() === 1">&laquo;</a>
+                                    <a class="rounded" style="cursor: pointer;"
+                                        *ngFor="let page of [].constructor(totalPages); let i = index"
+                                        (click)="goToPage(i + 1)" [class.active]="currentPage() === i + 1">
                                         {{ i + 1 }}
                                     </a>
-                                    <a class="rounded" (click)="goToPage(totalPages)"
-                                        [class.disabled]="currentPage === totalPages">&raquo;</a>
+                                    <a class="rounded" (click)="goToPage(totalPages)" style="cursor: pointer;"
+                                        [class.disabled]="currentPage() === totalPages">&raquo;</a>
                                 </div>
                             </div>
                         </div>

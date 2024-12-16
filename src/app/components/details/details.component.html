@@ -11,8 +11,8 @@
                     @if (cactus != null) {
                     <div class="col-lg-6">
                         <div class="border rounded">
-                            <a href={{cactus.image}}>
-                                <img src={{cactus.image}} class="img-fluid rounded" alt="Image">
+                            <a href={{cactus().image}}>
+                                <img src={{cactus().image}} class="img-fluid rounded" alt="Image">
                             </a>
                         </div>
                     </div>
@@ -22,17 +22,17 @@
                             class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
                             🌵 Go to my cactuses</a>
                         }
-                        <h4 class="fw-bold mb-3">{{cactus.cactusName}}</h4>
+                        <h4 class="fw-bold mb-3">{{cactus().cactusName}}</h4>
                         <p class="mb-3">Category: Type</p>
-                        <h5 class="fw-bold mb-3">{{cactus?.price?.toFixed(2)}} $</h5>
-                        <p class="mb-4">{{cactus.shortDescription}}</p>
+                        <h5 class="fw-bold mb-3">{{cactus().price | currency}}</h5>
+                        <p class="mb-4">{{cactus().shortDescription}}</p>
 
                         @if (isOwner()) {
-                        <a [routerLink]="['/add-cactus/' + cactus._id]"
+                        <a [routerLink]="['/add-cactus/' + cactus()._id]"
                             class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
                             🌵 Edit Cactus</a>
                         }@else {
-                        <a (click)="addToCart(cactus._id)" [ngClass]="{'disabled-link': isOwner()}"
+                        <a (click)="addToCart(cactus()._id)" [ngClass]="{'disabled-link': isOwner()}"
                             class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
                             🌵 Add to cart</a>
                         }
@@ -54,10 +54,10 @@
                         </nav>
                         <div class="tab-content mb-5">
                             <div class="tab-pane active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
-                                <p>{{cactus.description}}</p>
+                                <p>{{cactus().description}}</p>
                             </div>
                             <div class="tab-pane" id="nav-mission" role="tabpanel" aria-labelledby="nav-mission-tab">
-                                @for (review of cactus.reviews; track $index) {
+                                @for (review of cactus().reviews; track $index) {
                                 <div class="d-flex">
                                     <img src="" class="img-fluid rounded-circle p-3"
                                         style="width: 100px; height: 100px;" alt="">
@@ -71,6 +71,13 @@
                                             <p>{{review.review}}</p>
                                         </div>
                                     </div>
+                                    <td>
+
+                                        <button
+                                            class="table-responsive table btn btn-md rounded-circle bg-light border mt-4">
+                                            <i class="fa fa-times text-danger"></i>
+                                        </button>
+                                    </td>
                                 </div>
                                 }
                             </div>
@@ -82,23 +89,30 @@
                         <div class="row g-4">
                             <div class="col-lg-6">
                                 <div class="border-bottom rounded border border-secondary">
-                                    <input type="text" formControlName="name" name="name" id="name"
+                                    <!-- <input type="text" formControlName="name" name="name" id="name"
                                         class="form-control border-0 me-4" placeholder="Your Name *">
+                                        
                                     <div *ngIf="reviewForm.get('name')?.invalid && (reviewForm.get('name')?.touched || reviewForm.get('name')?.dirty)"
                                         class="text-danger">
                                         Name is required.
-                                    </div>
+                                    </div> -->
+
+                                    <input class="form-control border-0 me-4" type="text" id="username"
+                                        value={{userData?.displayName}} readonly>
                                 </div>
                             </div>
 
                             <div class="col-lg-6">
                                 <div class="border-bottom rounded border border-secondary">
-                                    <input type="email" formControlName="email" name="email" id="email"
+                                    <!-- <input type="email" formControlName="email" name="email" id="email"
                                         class="form-control border-0" placeholder="Your Email *">
                                     <div *ngIf="reviewForm.get('email')?.invalid && (reviewForm.get('email')?.touched || reviewForm.get('email')?.dirty)"
                                         class="text-danger">
                                         A valid email is required.
-                                    </div>
+                                    </div> -->
+
+                                    <input class="form-control border-0 me-4" type="email" id="email"
+                                        value={{userData?.email}} readonly>
                                 </div>
                             </div>
 

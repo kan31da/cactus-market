@@ -13,28 +13,24 @@
                 <div class="profile-form">
 
                     <label for="username">Username</label>
-                    <input type="text" id="username" value={{username}}
-                        readonly>
+                    <input type="text" id="username" value={{userData?.displayName}} readonly>
 
                     <label for="email">Email</label>
-                    <input type="email" id="email" value={{email}} readonly>
+                    <input type="email" id="email" value={{userData?.email}} readonly>
                 </div>
 
                 @if (!changePassword) {
 
-                <form [formGroup]="form" (ngSubmit)="onSubmit()"
-                    class="profile-form">
+                <form [formGroup]="form" (ngSubmit)="onSubmit()" class="profile-form">
                     <div formGroupName="passGroup">
 
                         <label for="password">Change Password</label>
                         <div class="change-password">
-                            <input type="password" placeholder="Password"
-                                formControlName="password" name="password"
+                            <input type="password" placeholder="Password" formControlName="password" name="password"
                                 id="password" />
                         </div>
                         <div class="change-password">
-                            <div
-                                *ngIf="form.get('passGroup.password')?.invalid && (form.get('passGroup.password')?.touched || form.get('passGroup.password')?.dirty)"
+                            <div *ngIf="form.get('passGroup.password')?.invalid && (form.get('passGroup.password')?.touched || form.get('passGroup.password')?.dirty)"
                                 class="text-danger">
                                 Password is required and must be at least {{
                                 passwordMinLength }} characters long.
@@ -43,35 +39,29 @@
 
                         <label for="password">Confirm Password</label>
                         <div class="change-password">
-                            <input type="password"
-                                placeholder="Confirm Password"
-                                formControlName="rePassword"
+                            <input type="password" placeholder="Confirm Password" formControlName="rePassword"
                                 name="rePassword" id="rePassword" />
                         </div>
                         <div class="change-password">
-                            <div
-                                *ngIf="form.get('passGroup.rePassword')?.invalid && (form.get('passGroup.rePassword')?.touched || form.get('passGroup.rePassword')?.dirty)"
+                            <div *ngIf="form.get('passGroup.rePassword')?.invalid && (form.get('passGroup.rePassword')?.touched || form.get('passGroup.rePassword')?.dirty)"
                                 class="text-danger">
                                 Password is required and must be at least {{
                                 passwordMinLength }} characters long.
                             </div>
-                            <div
-                                *ngIf="form.get('passGroup')?.hasError('matchPasswordsValidator') && (form.get('passGroup.rePassword')?.touched || form.get('passGroup.rePassword')?.dirty)"
+                            <div *ngIf="form.get('passGroup')?.hasError('matchPasswordsValidator') && (form.get('passGroup.rePassword')?.touched || form.get('passGroup.rePassword')?.dirty)"
                                 class="text-danger">
                                 Passwords do not match.
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn"
-                        [disabled]="form.invalid">Update</button>
+                    <button type="submit" class="btn" [disabled]="form.invalid">Update</button>
                 </form>
                 }
 
                 @if (changePassword)
                 {
                 <div class="profile-form">
-                    <button type="button" routerLink="/home"
-                        class="profile-form btn">Go Back To Home</button>
+                    <button type="button" routerLink="/home" class="profile-form btn">Go Back To Home</button>
                 </div>
                 }
             </div>

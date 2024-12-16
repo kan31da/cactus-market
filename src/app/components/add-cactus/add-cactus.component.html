@@ -1,6 +1,6 @@
 <div class="container-fluid page-header py-5">
     <h1 class="text-center text-white display-6">
-        {{ isEditMode ? 'Update Cactus' : 'Add Cactus' }}</h1>
+        {{ isEditMode() ? 'Update Cactus' : 'Add Cactus' }}</h1>
 </div>
 
 <div class="container-fluid py-5 mt-5">
@@ -12,14 +12,10 @@
 
                     <div class="col-lg-6">
                         <div class="border rounded">
-                            <img
-                                [src]="cactusForm.get('image')?.value"
-                                class="img-fluid rounded"
-                                alt="Cactus Image" />
+                            <img [src]="cactusForm.get('image')?.value" class="img-fluid rounded" alt="Cactus Image" />
                         </div>
-                        @if (isEditMode) {
-                        <button type="button" class="btn btn-back"
-                            [routerLink]="['/details/' + cactusId]">
+                        @if (isEditMode()) {
+                        <button type="button" class="btn btn-back" [routerLink]="['/details/' + cactus()?._id]">
                             Back to details
                         </button>
                         }
@@ -29,53 +25,35 @@
                         <form [formGroup]="cactusForm" (ngSubmit)="onSubmit()">
 
                             <div class="mb-3">
-                                <label for="cactusName"
-                                    class="form-label">Cactus Name</label>
-                                <input
-                                    type="text"
-                                    id="cactusName"
-                                    class="form-control"
-                                    formControlName="cactusName" />
-                                <div
-                                    *ngIf="cactusForm.get('cactusName')?.invalid && cactusForm.get('cactusName')?.touched"
+                                <label for="cactusName" class="form-label">Cactus Name</label>
+                                <input type="text" id="cactusName" class="form-control" formControlName="cactusName" />
+                                <div *ngIf="cactusForm.get('cactusName')?.invalid && cactusForm.get('cactusName')?.touched"
                                     class="text-danger">
                                     Cactus Name is required (max 50 characters).
                                 </div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="shortDescription"
-                                    class="form-label">Short Description</label>
-                                <input
-                                    type="text"
-                                    id="shortDescription"
-                                    class="form-control"
+                                <label for="shortDescription" class="form-label">Short Description</label>
+                                <input type="text" id="shortDescription" class="form-control"
                                     formControlName="shortDescription" />
-                                <div
-                                    *ngIf="
+                                <div *ngIf="
                               cactusForm.get('shortDescription')?.invalid &&
                               cactusForm.get('shortDescription')?.touched
-                            "
-                                    class="text-danger">
+                            " class="text-danger">
                                     Short Description is required (max 100
                                     characters).
                                 </div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="description"
-                                    class="form-label">Description</label>
-                                <textarea
-                                    id="description"
-                                    class="form-control"
-                                    formControlName="description"
+                                <label for="description" class="form-label">Description</label>
+                                <textarea id="description" class="form-control" formControlName="description"
                                     rows="4"></textarea>
-                                <div
-                                    *ngIf="
+                                <div *ngIf="
                               cactusForm.get('description')?.invalid &&
                               cactusForm.get('description')?.touched
-                            "
-                                    class="text-danger">
+                            " class="text-danger">
                                     Description is required (max 300
                                     characters).
                                 </div>
@@ -84,13 +62,8 @@
                             <div class="mb-3">
                                 <label for="image" class="form-label">Image
                                     URL</label>
-                                <input
-                                    type="text"
-                                    id="image"
-                                    class="form-control"
-                                    formControlName="image" />
-                                <div
-                                    *ngIf="cactusForm.get('image')?.invalid && cactusForm.get('image')?.touched"
+                                <input type="text" id="image" class="form-control" formControlName="image" />
+                                <div *ngIf="cactusForm.get('image')?.invalid && cactusForm.get('image')?.touched"
                                     class="text-danger">
                                     Image URL is required.
                                 </div>
@@ -99,30 +72,22 @@
                             <div class="mb-3">
                                 <label for="price" class="form-label">Price
                                     ($)</label>
-                                <input
-                                    type="number"
-                                    id="price"
-                                    class="form-control"
-                                    formControlName="price" />
-                                <div
-                                    *ngIf="cactusForm.get('price')?.invalid && cactusForm.get('price')?.touched"
+                                <input type="number" id="price" class="form-control" formControlName="price" />
+                                <div *ngIf="cactusForm.get('price')?.invalid && cactusForm.get('price')?.touched"
                                     class="text-danger">
                                     Price must be at least $0.01.
                                 </div>
                             </div>
 
                             <div>
-                                <button type="submit" class="btn btn-primary"
-                                    [disabled]="cactusForm.invalid">
-                                    {{ isEditMode ? 'Update Cactus' :
+                                <button type="submit" class="btn btn-primary" [disabled]="cactusForm.invalid">
+                                    {{ isEditMode() ? 'Update Cactus' :
                                     'Add Cactus' }}
                                 </button>
-                                <button type="button" class="btn btn-secondary"
-                                    (click)="cactusForm.reset()">
+                                <button type="button" class="btn btn-secondary" (click)="cactusForm.reset()">
                                     Reset
                                 </button>
-                                <button type="button" class="btn btn-back"
-                                    [routerLink]="['/my-cactuses']">
+                                <button type="button" class="btn btn-back" [routerLink]="['/my-cactuses']">
                                     Go to my Cactuses
                                 </button>
                             </div>

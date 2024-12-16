@@ -43,3 +43,10 @@
     font-size: 1.5rem; 
     margin-bottom: 20px;
 }
+
+.disabled-link {
+    pointer-events: none;
+    opacity: 0.5;
+    color: gray;
+    background-color: dimgrey;
+}

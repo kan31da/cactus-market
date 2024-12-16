@@ -1,78 +1,90 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { Cactus } from '../../types/cactus';
-import { CactusService } from '../../services/cactus.service';
 import { AuthService } from '../../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { RouterLink } from '@angular/router';
-import { UserService } from '../../services/user.service';
 import { User } from '../../types/user';
-import { FormsModule } from '@angular/forms';
-import { NgIf } from '@angular/common';
+import { CurrencyPipe, NgClass } from '@angular/common';
+import { CartService } from '../../services/cart.service';
 
 @Component({
     selector: 'app-cart',
     standalone: true,
-    imports: [RouterLink],
+    imports: [RouterLink, NgClass, CurrencyPipe],
     templateUrl: './cart.component.html',
     styleUrl: './cart.component.css'
 })
 export class CartComponent {
 
-    cactuses: Cactus[] = [];
-    userId: string | null = null;
-    couponCode: string | null = null;
-    checkOutMessage: string | null = null;
-    isCheckOut = false;
+    // cactuses = signal<Cactus[]>([]);
+    checkOutMessage = signal<string>('');
+    isCheckOut = signal<boolean>(false);
 
     constructor(
         private authService: AuthService,
-        private userService: UserService,
-        private toastr: ToastrService) { }
+        private toastr: ToastrService,
+        private cartService: CartService) { }
 
     ngOnInit(): void {
-        this.userId = this.authService.currentUserSig()?.email || null;
-        this.cactuses = this.userService.userData?.cart.cactuses!;
+        this.checkOutMessage.set('');
     }
 
+    get userData(): User | null | undefined {
+        return this.authService.currentUserSig();
+    }
+    get cactusesData(): Cactus[] {
+        return this.cartService.cart.cactuses;
+    }
+    get cactusesDataGetLength(): boolean {
+        const cart = this.cartService.cart;
+        return cart && cart.cactuses ? cart.cactuses.length > 0 : false;
+    }
+
+    // calculatePrice(): number {
+    //     const cart = this.cartService.currentCart();
+    //     if (!cart || cart.cactuses) {
+    //         return 0;
+    //     }
+    //     // return this.cactuses().reduce((total, cactus) => total + cactus.price, 0);
+    //     return this.cartService.currentCart()!.cactuses.reduce((total, cactus) => total + cactus.price, 0);//TODO TODO TODO quantity
+    // }
     calculatePrice(): number {
-        if (!this.cactuses || this.cactuses.length === 0) {
+        const cart = this.cartService.currentCart();
+        if (!cart || !cart.cactuses || cart.cactuses.length === 0) {
             return 0;
         }
-        return this.cactuses.reduce((total, cactus) => total + cactus.price, 0);
+        return cart.cactuses.reduce((total, cactus) => {
+            const price = cactus.price || 0;
+            const quantity = cactus.quantity || 1;
+            return total + price * quantity;
+        }, 0);
     }
-    getPrice(): string {
-        return this.calculatePrice().toFixed(2);
+    getPrice(): number {
+        return this.calculatePrice();
     }
-    getPriceWithShippingTaxes(): string {
-        return (this.calculatePrice() + 5).toFixed(2);
+    getPriceWithShippingTaxes(): number {
+        return (this.calculatePrice() + 5);
     }
     isCactusListEmpty(): boolean {
-        return this.cactuses.length === 0;
+        const cart = this.cartService.cart;
+        return cart && cart.cactuses ? cart.cactuses.length === 0 : true;
     }
 
-    deleteCactus(cartCactusId: string, cactusName: string) {
+    deleteCactus(cactusId: string, cactusName: string) {
 
-        if (this.cactuses) {
+        if (this.cartService.cart.cactuses) {
 
-            const user: User = { ...this.userService.userData! };
-
-            user.cart.cactuses = user.cart.cactuses.filter(x => {
-                return x.cartCactusId != cartCactusId;
+            this.cartService.cart.cactuses = this.cartService.cart.cactuses.filter(x => {
+                return x._id != cactusId;
             });
 
-            this.userService.updateUser(user._id, user).then(() => {
-                this.userService.updateUserState(user);
+            this.cartService.updateCart(this.cartService.cart?._id!, this.cartService.cart)
+                .subscribe({
+                    next: () => {
+                        this.toastr.warning(`"${cactusName}" has been removed from your cart.`, 'Cactus Removed!');
+                    }
+                });
 
-                this.cactuses! = this.cactuses.filter(x => {
-                    return x.cartCactusId != cartCactusId;
-                })
-
-                this.toastr.warning(`"${cactusName}" has been removed from your cart.`, 'Cactus Removed!');
-
-            }).catch(error => {
-
-                this.toastr.error('Error removing cactus: ' + error.message);
-            });
         } else {
 
             this.toastr.warning('Unable to remove cactus: Cart is empty or undefined.');
@@ -81,23 +93,19 @@ export class CartComponent {
 
     proceedCheckout(): void {
 
-        const user: User = { ...this.userService.userData! };
         const total = this.getPriceWithShippingTaxes();
-        const count = this.cactuses.length;
+        const count = this.cartService.cart.cactuses.length;// TODO TODO quantity price
 
-        user.cart.cactuses = [];
+        this.cartService.cart.cactuses = [];
+        this.cartService.updateCart(this.cartService.cart?._id!, this.cartService.cart)
+            .subscribe({
+                next: () => {
+                    this.isCheckOut.set(true);
 
-        this.userService.updateUser(user._id, user).then(() => {
-            this.userService.updateUserState(user);
+                    this.checkOutMessage.set(`Successfully ordered ${count} cactus(es) for ${this.userData?.uid}. Total: ${total} 'Your order has been processed.'`);
+                    this.toastr.success(`Successfully ordered ${count} cactus(es) for ${this.userData?.uid}. Total: ${total}`, 'Your order has been processed.');
+                }
+            });
 
-            this.cactuses! = [];
-            this.isCheckOut = true;
-            this.checkOutMessage = `Successfully ordered ${count} cactus(es) for ${this.userId}. Total: ${total}`, 'Your order has been processed.';
-            this.toastr.success(`Successfully ordered ${count} cactus(es) for ${this.userId}. Total: ${total}`, 'Your order has been processed.');
-
-        }).catch(error => {
-
-            this.toastr.error('Checkout Error: ' + error.message);
-        });
     }
 }

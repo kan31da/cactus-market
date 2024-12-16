@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { matchPasswordsValidator } from '../../utils/match-passwords.validator';
 import { PASSWORD_MIN_LENGTH } from '../../utils/constants';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { UserService } from '../../services/user.service';
 import { User } from '../../types/user';
 
 @Component({
@@ -15,7 +14,7 @@ import { User } from '../../types/user';
     templateUrl: './profile.component.html',
     styleUrl: './profile.component.css'
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent {
 
     public passwordMinLength = PASSWORD_MIN_LENGTH;
     public form: FormGroup;
@@ -23,7 +22,7 @@ export class ProfileComponent implements OnInit {
     public successMessage: string | null = null;
     public changePassword = false;
 
-    constructor(private fb: FormBuilder, private authService: AuthService, private userService: UserService) {
+    constructor(private fb: FormBuilder, private authService: AuthService) {
 
         this.form = this.fb.nonNullable.group({
             passGroup: this.fb.group({
@@ -38,22 +37,8 @@ export class ProfileComponent implements OnInit {
         });
     }
 
-    // get user(): User | null {
-    //     return this.userService.userData;
-    // }
-
-    username: string | undefined;
-
-    get email(): string {
-        return this.authService.currentUserSig()?.email || '';
-    }
-
-    ngOnInit(): void {
-        this.userService.getUserByEmail(this.email).subscribe((userList) => {
-            if (userList && userList.length > 0) {
-                this.username = userList[0].username;
-            }
-        });
+    get userData(): User | null | undefined {
+        return this.authService.currentUserSig();
     }
 
     onSubmit(): void {

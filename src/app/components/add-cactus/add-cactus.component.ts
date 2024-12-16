@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Cactus } from '../../types/cactus';
 import { NgIf } from '@angular/common';
@@ -6,6 +6,7 @@ import { CactusService } from '../../services/cactus.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
+import { User } from '../../types/user';
 
 @Component({
     selector: 'app-add-cactus',
@@ -15,12 +16,9 @@ import { ToastrService } from 'ngx-toastr';
     styleUrl: './add-cactus.component.css'
 })
 export class AddCactusComponent implements OnInit {
-
     cactusForm: FormGroup;
-    isEditMode: boolean = false;
-    cactus: Cactus | null = null;
-    cactusId: string | null = null;
-    userId: string | null = null;
+    isEditMode = signal<boolean>(false);
+    cactus = signal<Cactus | undefined>(undefined);
 
     constructor(
         private fb: FormBuilder,
@@ -39,54 +37,57 @@ export class AddCactusComponent implements OnInit {
         });
     }
 
-    async ngOnInit(): Promise<void> {
-        this.cactusId = this.route.snapshot.params["cactusId"];
+    ngOnInit(): void {
+        const cactusId = this.route.snapshot.params['cactusId'];
+        this.cactusService.getCactusById(cactusId).subscribe((cactus) => {
 
-        this.userId = this.authService.currentUserSig()?.email || null;
+            if (cactus && this.userData?.uid == cactus?.userId) {
+                this.cactus.set(cactus);
+                this.isEditMode.set(true);
+            } else {
+                this.cactus.set(undefined);
+            }
 
-        const cactus = await this.cactusService.getCactusById(this.cactusId!);
-        if (cactus && this.userId == cactus.userId) {
-            this.cactus = cactus;
-            this.isEditMode = true;
-        }
+            if (this.isEditMode()) {
 
-        if (this.isEditMode && this.cactus) {
+                this.cactusForm.patchValue({
+                    // cactusName: this.cactus()?.cactusName,
+                    // shortDescription: this.cactus()?.shortDescription,
+                    // description: this.cactus()?.description,
+                    // image: this.cactus()?.image,
+                    // price: this.cactus()?.price,
+                    // userId: this.cactus()?.userId,
+                    ...this.cactus(),
+                });
+            }
+        });
+    }
 
-            this.cactusForm.patchValue({
-                cactusName: this.cactus.cactusName,
-                shortDescription: this.cactus.shortDescription,
-                description: this.cactus.description,
-                image: this.cactus.image,
-                price: this.cactus.price,
-                userId: this.cactus.userId,
-            });
-        }
+    get userData(): User | null {
+        return this.authService.currentUserSig() as User;
     }
 
     onSubmit(): void {
         if (this.cactusForm.valid) {
-            const formData: Cactus = {
-                ...this.cactusForm.value,
-                reviews: []    , 
-                cartCactusId: '',               
-            };
+            const formData: Cactus = { ...this.cactusForm.value };
 
-            if (this.isEditMode) {
-
-                this.cactusService.updateCactus(this.cactusId!, formData)
-                    .then(() => {
+            if (this.isEditMode()) {
+                this.cactusService.updateCactus(this.cactus()?._id!, formData).subscribe({
+                    next: () => {
                         this.toastr.info(`The price of "${formData.cactusName}" has been updated to $${formData.price}.`, 'Cactus Updated!');
-                        this.router.navigate([`details/${this.cactusId}`]);
-                    });
+                        this.router.navigate([`details/${this.cactus()?._id}`]);
+                    }
+                });
             }
             else {
-
-                formData.userId = this.userId!;
-                this.cactusService.createCactus(formData)
-                    .then(cactusId => {
+                formData.userId = this.userData?.uid!;
+                this.cactusService.createCactus(formData).subscribe({
+                    next: (cactus) => {
+                        debugger;
                         this.toastr.success(`"${formData.cactusName}" has been successfully added at a price of $${formData.price}.`, 'Cactus Added!');
-                        this.router.navigate([`details/${cactusId}`]);
-                    });
+                        this.router.navigate([`details/${cactus}`]);
+                    }
+                });
             }
         }
     }

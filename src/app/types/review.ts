@@ -6,4 +6,5 @@ export interface Review {
     email: string;
     review: string;
     date: Timestamp;
+    uid: string;
 }

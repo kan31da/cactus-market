@@ -3,7 +3,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { NgIf } from '@angular/common';
-import { UserService } from '../../services/user.service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -17,7 +16,6 @@ export class LoginComponent {
 
     constructor(
         private authService: AuthService,
-        private userService: UserService,
         private router: Router,
         private toastr: ToastrService) { }
 
@@ -40,7 +38,6 @@ export class LoginComponent {
             this.authService.login(rawForm.email, rawForm.password)
                 .subscribe({
                     next: () => {
-                        this.userService.subscribeUser(rawForm.email);
                         this.toastr.info(`You have successfully logged in as "${rawForm.email}".`, 'Login Successful!');
                         this.router.navigateByUrl('/');
                     },

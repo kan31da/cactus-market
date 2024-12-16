@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { UserService } from '../../services/user.service';
-import { CommonModule } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 import { User } from '../../types/user';
 import { ToastrService } from 'ngx-toastr';
+import { CartService } from '../../services/cart.service';
 
 @Component({
     selector: 'app-header',
     standalone: true,
-    imports: [RouterLink, CommonModule],
+    imports: [RouterLink, CurrencyPipe],
     templateUrl: './header.component.html',
     styleUrl: './header.component.css'
 })
@@ -19,18 +19,20 @@ export class HeaderComponent {
     constructor(
         private router: Router,
         private authService: AuthService,
-        private userService: UserService,
+        private cartService: CartService,
         private toastr: ToastrService
     ) {
-
         this.router.events.subscribe(() => {
             this.activeLink = this.router.url; // Update the active link
         });
     }
 
-    get user(): User | null {
-        return this.userService.userData;
-        // return this.authService.currentUserSig() as User
+    get userData(): User | null {
+        return this.authService.currentUserSig() as User;
+    }
+    get cactusesDataGetLength(): number {
+        const cart = this.cartService.currentCart();
+        return cart && cart.cactuses ? cart.cactuses.length : 0;
     }
 
     isActive(link: string): boolean {
@@ -44,7 +46,6 @@ export class HeaderComponent {
     logout() {
         this.authService.logout().subscribe({
             next: () => {
-                this.userService.unsubscribeUser();
                 this.toastr.info(`You have been logged out successfully.`, 'Logout Successful!');
                 this.router.navigateByUrl('/');
             }

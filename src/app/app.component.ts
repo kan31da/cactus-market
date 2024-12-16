@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { AuthService } from './services/auth.service';
-import { UserService } from './services/user.service';
+import { CartService } from './services/cart.service';
 
 @Component({
     selector: 'app-root',
@@ -20,24 +20,29 @@ import { UserService } from './services/user.service';
 export class AppComponent implements OnInit {
     title = 'cactus-market';
 
-    constructor(private authService: AuthService, private userService: UserService) { }
-    // authService = inject(AuthService);
+    constructor(private authService: AuthService, private cartService: CartService) { }
 
     ngOnInit(): void {
         this.authService.user$.subscribe((auth: any) => {
             if (auth) {
+
+                if (auth.displayName == null) {
+                    auth.reload();
+                }
+
                 this.authService.currentUserSig
                     .set({
-                        email: auth.email!,
+                        email: auth.email,
+                        uid: auth.uid,
+                        displayName: auth.displayName,
                     });
-                this.userService.subscribeUser(auth.email);
+
+                this.cartService.loadCart(auth.uid);
             }
             else {
                 this.authService.currentUserSig.set(null);
-                this.userService.unsubscribeUser();
+                this.cartService.currentCart.set(null);
             }
-
-            console.log(this.authService.currentUserSig());
         });
     }
 }

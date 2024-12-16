@@ -32,7 +32,7 @@
                             </a>
                         </td>
                         <td>
-                            <p class="mb-0 mt-4">{{cactus.price.toFixed(2)}} $</p>
+                            <p class="mb-0 mt-4">{{cactus.price | currency}}</p>
                         </td>
                         <td>
                             <button (click)="deleteCactus(cactus._id, cactus.cactusName)"

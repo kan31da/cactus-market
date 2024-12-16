@@ -4,11 +4,12 @@ import { Cactus } from '../../types/cactus';
 import { CactusService } from '../../services/cactus.service';
 import { AuthService } from '../../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
     selector: 'app-my-cactuses',
     standalone: true,
-    imports: [RouterLink],
+    imports: [RouterLink, CurrencyPipe],
     templateUrl: './my-cactuses.component.html',
     styleUrl: './my-cactuses.component.css'
 })
@@ -32,11 +33,13 @@ export class MyCactusesComponent {
     }
 
     deleteCactus(cactusId: string, cactusName: string) {
-        this.cactusService.deleteCactus(cactusId).then(() => {
-            this.cactuses = this.cactuses.filter(x => {
-                return x._id != cactusId;
-            })
-            this.toastr.warning(`"${cactusName}" has been removed from your collection.`, 'Cactus Removed!');
+        this.cactusService.deleteCactus(cactusId).subscribe({
+            next: () => {
+                this.cactuses = this.cactuses.filter(x => {
+                    return x._id != cactusId;
+                })
+                this.toastr.warning(`"${cactusName}" has been removed from your collection.`, 'Cactus Removed!');
+            }
         });
     }
 }

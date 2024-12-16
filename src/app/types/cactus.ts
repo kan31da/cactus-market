@@ -8,6 +8,6 @@ export interface Cactus {
     image: string;
     price: number;
     userId: string;
-    cartCactusId: string;
+    quantity: number;
     reviews: Review[]
 }
