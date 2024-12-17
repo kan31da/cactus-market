@@ -7,8 +7,6 @@ import { from, map, Observable } from 'rxjs';
     providedIn: 'root'
 })
 export class CactusService {
-    // cactuses: Cactus[] = [];
-
     private cactusesCollectionName = 'cactuses';
 
     constructor(private firestore: Firestore) { }
@@ -24,7 +22,7 @@ export class CactusService {
     getCactusByUserID(userId: string): Observable<Cactus[]> {
         const cactusesCollection = collection(this.firestore, this.cactusesCollectionName);
         const cactusQuery = query(cactusesCollection, where('userId', '==', userId));
-        return collectionData(cactusQuery, { idField: 'userID' }) as Observable<Cactus[]>;
+        return collectionData(cactusQuery, { idField: 'userId' }) as Observable<Cactus[]>;
     }
 
     getCactuses(): Observable<Cactus[]> {

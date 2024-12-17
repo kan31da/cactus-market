@@ -27,7 +27,7 @@ export const appConfig: ApplicationConfig = {
             preventDuplicates: false,
             progressBar: true,
             progressAnimation: "decreasing",
-            closeButton: true,            
-        }),     
+            closeButton: true,
+        }),
     ]
 };

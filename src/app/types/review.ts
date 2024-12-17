@@ -5,6 +5,7 @@ export interface Review {
     name: string;
     email: string;
     review: string;
-    date: Timestamp;
+    date: Date;
     uid: string;
+    cactusId: string;
 }

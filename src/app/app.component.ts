@@ -35,13 +35,11 @@ export class AppComponent implements OnInit {
                         email: auth.email,
                         uid: auth.uid,
                         displayName: auth.displayName,
-                    });
-
-                this.cartService.loadCart(auth.uid);
+                    });              
             }
             else {
                 this.authService.currentUserSig.set(null);
-                this.cartService.currentCart.set(null);
+                this.cartService.clearCart();
             }
         });
     }

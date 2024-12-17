@@ -9,5 +9,4 @@ export interface Cactus {
     price: number;
     userId: string;
     quantity: number;
-    reviews: Review[]
 }

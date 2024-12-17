@@ -1,7 +1,9 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Cart } from '../types/cart';
-import { from, map, Observable, tap } from 'rxjs';
+import { from, map, Observable, of, switchMap, tap } from 'rxjs';
 import { collection, collectionData, deleteDoc, doc, Firestore, getDoc, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
+import { AuthService } from './auth.service';
+import { User } from '../types/user';
 
 @Injectable({
     providedIn: 'root'
@@ -9,13 +11,23 @@ import { collection, collectionData, deleteDoc, doc, Firestore, getDoc, query, s
 export class CartService {
     private cartsCollectionName = 'carts';
 
-    // private cart$$ = new BehaviorSubject<Object | null>(null);
     private firestore = inject(Firestore);
-    public cart$ = this.firestore;
-    currentCart = signal<Cart | null>({} as Cart);
+    private authService = inject(AuthService);
+    public currentCart = signal<Cart | null>(null);
 
-    // constructor(private firestore: Firestore) { }
-    constructor() { }
+    constructor() {
+        this.authService.user$.pipe(
+            switchMap((user: User) => {
+                if (user) {
+                    return this.getCartByUid(user.uid).pipe(
+                        map((carts) => (carts.length > 0 ? carts[0] : null))
+                    );
+                } else {
+                    return of(null);
+                }
+            })
+        ).subscribe((cart: Cart | null) => this.currentCart.set(cart));
+    }
 
     get cart(): Cart {
         return this.currentCart()!;
@@ -55,11 +67,18 @@ export class CartService {
         return from(deleteDoc(cartDocRef));
     }
 
-    loadCart(uid: string) {
-        this.getCartByUid(uid).pipe(
-            tap(cart => {
-                this.currentCart.set(cart[0]);
-            })
-        ).subscribe();
+    clearCart(): void {
+        this.currentCart.set(null);
+    }
+
+    get cactusesDataGetQuantity(): number {
+        const cart = this.currentCart();
+        if (!cart || !cart.cactuses || cart.cactuses.length === 0) {
+            return 0;
+        }
+        return cart.cactuses.reduce((total, cactus) => {
+            const quantity = cactus.quantity;
+            return total + quantity;
+        }, 0);
     }
 }

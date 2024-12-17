@@ -49,16 +49,7 @@ export class AddCactusComponent implements OnInit {
             }
 
             if (this.isEditMode()) {
-
-                this.cactusForm.patchValue({
-                    // cactusName: this.cactus()?.cactusName,
-                    // shortDescription: this.cactus()?.shortDescription,
-                    // description: this.cactus()?.description,
-                    // image: this.cactus()?.image,
-                    // price: this.cactus()?.price,
-                    // userId: this.cactus()?.userId,
-                    ...this.cactus(),
-                });
+                this.cactusForm.patchValue({ ...this.cactus(), });
             }
         });
     }
@@ -81,9 +72,9 @@ export class AddCactusComponent implements OnInit {
             }
             else {
                 formData.userId = this.userData?.uid!;
+                formData.quantity = 1;
                 this.cactusService.createCactus(formData).subscribe({
                     next: (cactus) => {
-                        debugger;
                         this.toastr.success(`"${formData.cactusName}" has been successfully added at a price of $${formData.price}.`, 'Cactus Added!');
                         this.router.navigate([`details/${cactus}`]);
                     }

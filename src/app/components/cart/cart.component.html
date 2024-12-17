@@ -23,6 +23,8 @@
                         <th scope="col">Products</th>
                         <th scope="col">Name</th>
                         <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
                         <th scope="col">Remove Cactus</th>
                     </tr>
                 </thead>
@@ -45,6 +47,27 @@
                         </td>
                         <td>
                             <p class="mb-0 mt-4">{{cactus.price | currency}}</p>
+                        </td>
+                        <td>
+                            <div class="input-group quantity mt-4" style="width: 100px;">
+                                <div class="input-group-btn">
+                                    <button (click)="minusQuantity(cactus._id)"
+                                        class="btn btn-sm btn-minus rounded-circle bg-light border">
+                                        <i class="fa fa-minus"></i>
+                                    </button>
+                                </div>
+                                <input type="text" class="form-control form-control-sm text-center border-0"
+                                    [value]="cactus.quantity">
+                                <div class="input-group-btn">
+                                    <button (click)="plusQuantity(cactus._id)"
+                                        class="btn btn-sm btn-plus rounded-circle bg-light border">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <p class="mb-0 mt-4">{{getPriceForCurrentCactus(cactus._id) | currency}}</p>
                         </td>
                         <td>
                             <button (click)="deleteCactus(cactus._id, cactus.cactusName)"
@@ -74,7 +97,7 @@
                         <div class="d-flex justify-content-between">
                             <h5 class="mb-0 me-4">Shipping</h5>
                             <div class="">
-                                <p class="mb-0">Flat rate: {{5.00 | currency}}</p>
+                                <p class="mb-0">Flat rate: {{ flatRate | currency}}</p>
                             </div>
                         </div>
                         <p class="mb-0 text-end">Shipping to Bulgaria.</p>

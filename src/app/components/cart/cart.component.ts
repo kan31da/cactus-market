@@ -6,6 +6,7 @@ import { RouterLink } from '@angular/router';
 import { User } from '../../types/user';
 import { CurrencyPipe, NgClass } from '@angular/common';
 import { CartService } from '../../services/cart.service';
+import { DEFAULT_FLAT_RATE } from '../../utils/constants';
 
 @Component({
     selector: 'app-cart',
@@ -15,8 +16,6 @@ import { CartService } from '../../services/cart.service';
     styleUrl: './cart.component.css'
 })
 export class CartComponent {
-
-    // cactuses = signal<Cactus[]>([]);
     checkOutMessage = signal<string>('');
     isCheckOut = signal<boolean>(false);
 
@@ -39,15 +38,10 @@ export class CartComponent {
         const cart = this.cartService.cart;
         return cart && cart.cactuses ? cart.cactuses.length > 0 : false;
     }
+    get flatRate(): number {
+        return DEFAULT_FLAT_RATE;
+    }
 
-    // calculatePrice(): number {
-    //     const cart = this.cartService.currentCart();
-    //     if (!cart || cart.cactuses) {
-    //         return 0;
-    //     }
-    //     // return this.cactuses().reduce((total, cactus) => total + cactus.price, 0);
-    //     return this.cartService.currentCart()!.cactuses.reduce((total, cactus) => total + cactus.price, 0);//TODO TODO TODO quantity
-    // }
     calculatePrice(): number {
         const cart = this.cartService.currentCart();
         if (!cart || !cart.cactuses || cart.cactuses.length === 0) {
@@ -63,11 +57,42 @@ export class CartComponent {
         return this.calculatePrice();
     }
     getPriceWithShippingTaxes(): number {
-        return (this.calculatePrice() + 5);
+        return (this.calculatePrice() + DEFAULT_FLAT_RATE);
     }
     isCactusListEmpty(): boolean {
         const cart = this.cartService.cart;
         return cart && cart.cactuses ? cart.cactuses.length === 0 : true;
+    }
+    getPriceForCurrentCactus(cactusId: string): number {
+        const existingCactus = this.cartService.cart.cactuses.find(x => x._id === cactusId);
+        return existingCactus?.price! * existingCactus?.quantity!
+    }
+
+    plusQuantity(cactusId: string): void {
+        this.cartService.cart.cactuses.forEach(x => {
+            if (x._id === cactusId) {
+                x.quantity++;
+                this.updateCart();
+            }
+        });
+    }
+    minusQuantity(cactusId: string): void {
+        this.cartService.cart.cactuses.forEach(x => {
+            if (x._id === cactusId) {
+                if (x.quantity > 1) {
+                    x.quantity--;
+                    this.updateCart();
+                }
+            }
+        });
+    }
+
+    private updateCart(): void {
+        this.cartService.updateCart(this.cartService.cart._id, this.cartService.cart).subscribe({
+            next: () => {
+                this.toastr.info('Product quantity updated.', 'Cart Updated');
+            }
+        });
     }
 
     deleteCactus(cactusId: string, cactusName: string) {
@@ -94,7 +119,7 @@ export class CartComponent {
     proceedCheckout(): void {
 
         const total = this.getPriceWithShippingTaxes();
-        const count = this.cartService.cart.cactuses.length;// TODO TODO quantity price
+        const count = this.cartService.cactusesDataGetQuantity;
 
         this.cartService.cart.cactuses = [];
         this.cartService.updateCart(this.cartService.cart?._id!, this.cartService.cart)
@@ -102,8 +127,8 @@ export class CartComponent {
                 next: () => {
                     this.isCheckOut.set(true);
 
-                    this.checkOutMessage.set(`Successfully ordered ${count} cactus(es) for ${this.userData?.uid}. Total: ${total} 'Your order has been processed.'`);
-                    this.toastr.success(`Successfully ordered ${count} cactus(es) for ${this.userData?.uid}. Total: ${total}`, 'Your order has been processed.');
+                    this.checkOutMessage.set(`Successfully ordered ${count} cactus(es) for ${this.userData?.email}. Total:$ ${total.toFixed(2)} 'Your order has been processed.'`);
+                    this.toastr.success(`Successfully ordered ${count} cactus(es) for ${this.userData?.email}. Total:$ ${total.toFixed(2)}`, 'Your order has been processed.');
                 }
             });
 

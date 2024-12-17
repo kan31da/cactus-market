@@ -81,11 +81,11 @@
                                             <img src={{cactus.image}} class="img-fluid w-100 rounded-top" alt>
                                         </div>
                                         <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
-                                            style="top: 10px; left: 10px;">{{cactus.cactusName}}</div>
+                                            style="top: 10px; left: 10px;">{{cactus.cactusName | slice}}</div>
 
                                     </a>
                                     <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-                                        <h4>{{cactus.cactusName}}</h4>
+                                        <h4>{{cactus.cactusName | slice}}</h4>
                                         <p>{{cactus.shortDescription}}</p>
                                         <div class="d-flex justify-content-between flex-lg-wrap">
                                             <p class="text-dark fs-5 fw-bold mb-0">{{cactus.price | currency}}🌵</p>

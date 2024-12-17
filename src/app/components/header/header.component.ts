@@ -30,9 +30,8 @@ export class HeaderComponent {
     get userData(): User | null {
         return this.authService.currentUserSig() as User;
     }
-    get cactusesDataGetLength(): number {
-        const cart = this.cartService.currentCart();
-        return cart && cart.cactuses ? cart.cactuses.length : 0;
+    get cactusesGetQuantity(): number {
+        return this.cartService.cactusesDataGetQuantity;
     }
 
     isActive(link: string): boolean {

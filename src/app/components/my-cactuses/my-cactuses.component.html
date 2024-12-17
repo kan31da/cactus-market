@@ -14,9 +14,9 @@
                         <th scope="col">Remove Cactus</th>
                     </tr>
                 </thead>
-                @if (cactuses.length > 0 ) {
+                @if ((cactuses$ | async)?.length! > 0) {
                 <tbody>
-                    @for (cactus of cactuses; track $index) {
+                    @for (cactus of (cactuses$ | async); track $index) {
                     <tr>
                         <th scope="row">
 

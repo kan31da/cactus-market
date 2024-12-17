@@ -11,8 +11,8 @@
                     @if (cactus != null) {
                     <div class="col-lg-6">
                         <div class="border rounded">
-                            <a href={{cactus().image}}>
-                                <img src={{cactus().image}} class="img-fluid rounded" alt="Image">
+                            <a href={{cactus()?.image}}>
+                                <img src={{cactus()?.image}} class="img-fluid rounded" alt="Image">
                             </a>
                         </div>
                     </div>
@@ -22,17 +22,35 @@
                             class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
                             🌵 Go to my cactuses</a>
                         }
-                        <h4 class="fw-bold mb-3">{{cactus().cactusName}}</h4>
+                        <h4 class="fw-bold mb-3">{{cactus()?.cactusName!}}</h4>
                         <p class="mb-3">Category: Type</p>
-                        <h5 class="fw-bold mb-3">{{cactus().price | currency}}</h5>
-                        <p class="mb-4">{{cactus().shortDescription}}</p>
+                        <h5 class="fw-bold mb-3">{{cactus()?.price | currency}}</h5>
+                        <p class="mb-4">{{cactus()?.shortDescription}}</p>
 
                         @if (isOwner()) {
-                        <a [routerLink]="['/add-cactus/' + cactus()._id]"
+                        <a [routerLink]="['/add-cactus/' + cactus()?._id]"
                             class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
                             🌵 Edit Cactus</a>
                         }@else {
-                        <a (click)="addToCart(cactus()._id)" [ngClass]="{'disabled-link': isOwner()}"
+
+                        <div class="input-group quantity mb-5" style="width: 100px;">
+                            <div class="input-group-btn">
+                                <button (click)="minusQuantity()"
+                                    class="btn btn-sm btn-minus rounded-circle bg-light border">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                            <input type="text" class="form-control form-control-sm text-center border-0"
+                                [value]="cactus()?.quantity">
+                            <div class="input-group-btn">
+                                <button (click)="plusQuantity()"
+                                    class="btn btn-sm btn-plus rounded-circle bg-light border">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <a (click)="addToCart()" [ngClass]="{'disabled-link': isOwner()}"
                             class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
                             🌵 Add to cart</a>
                         }
@@ -54,15 +72,15 @@
                         </nav>
                         <div class="tab-content mb-5">
                             <div class="tab-pane active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
-                                <p>{{cactus().description}}</p>
+                                <p>{{cactus()?.description}}</p>
                             </div>
                             <div class="tab-pane" id="nav-mission" role="tabpanel" aria-labelledby="nav-mission-tab">
-                                @for (review of cactus().reviews; track $index) {
+                                @for (review of reviews$ | async; track $index) {
                                 <div class="d-flex">
-                                    <img src="" class="img-fluid rounded-circle p-3"
-                                        style="width: 100px; height: 100px;" alt="">
+                                    <!-- <img src="" class="img-fluid rounded-circle p-3"
+                                        style="width: 100px; height: 100px;" alt=""> -->
                                     <div class="flex-grow-1">
-                                        <p class="mb-2" style="font-size: 14px;">{{review.date}}</p>
+                                        <p class="mb-2" style="font-size: 14px;">{{review.date | date}}</p>
                                         <div class="d-flex justify-content-between">
                                             <h5>{{review.name}}</h5>
                                         </div>
@@ -71,13 +89,14 @@
                                             <p>{{review.review}}</p>
                                         </div>
                                     </div>
+                                    @if(userData?.uid === review.uid){
                                     <td>
-
-                                        <button
+                                        <button (click)="removeReview(review._id!)"
                                             class="table-responsive table btn btn-md rounded-circle bg-light border mt-4">
                                             <i class="fa fa-times text-danger"></i>
                                         </button>
                                     </td>
+                                    }
                                 </div>
                                 }
                             </div>
