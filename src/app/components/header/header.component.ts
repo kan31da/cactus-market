@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { CurrencyPipe } from '@angular/common';
 import { User } from '../../types/user';
 import { ToastrService } from 'ngx-toastr';
 import { CartService } from '../../services/cart.service';
@@ -9,7 +8,7 @@ import { CartService } from '../../services/cart.service';
 @Component({
     selector: 'app-header',
     standalone: true,
-    imports: [RouterLink, CurrencyPipe],
+    imports: [RouterLink],
     templateUrl: './header.component.html',
     styleUrl: './header.component.css'
 })
