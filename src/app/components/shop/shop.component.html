@@ -10,59 +10,74 @@
                 <div class="row g-4">
                     <div class="col-xl-3">
                         <div class="input-group w-100 mx-auto d-flex">
-                            <input type="search" class="form-control p-3" placeholder="keywords"
-                                aria-describedby="search-icon-1">
+                            <input [(ngModel)]="searchTerm" (input)="onSearch()" placeholder="Search..." type="search"
+                                class="form-control p-3" aria-describedby="search-icon-1">
                             <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
                         </div>
                     </div>
                     <div class="col-6"></div>
+
                     <div class="col-xl-3">
                         <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
                             <label for="Cactus">Default Sorting:</label>
                             <select id="Cactus" name="fruitlist" class="border-0 form-select-sm bg-light me-3"
-                                form="fruitform">
-                                <option value="volvo">Nothing</option>
-                                <option value="saab">Popularity</option>
-                                <option value="audi">Fantastic</option>
+                                [(ngModel)]="selectedSortCriteria" (change)="onSortChange()">
+                                <option value="nothing">Nothing</option>
+                                <option value="price-asc">Price (Low to High)</option>
+                                <option value="price-desc">Price (High to Low)</option>
+                                <option value="name">Name</option>
                             </select>
                         </div>
                     </div>
+
                 </div>
                 <div class="row g-4">
                     <div class="col-lg-3">
                         <div class="row g-4">
                             <div class="col-lg-12">
                                 <div class="mb-3">
-                                    <h4>Categories</h4>
-                                    <ul class="list-unstyled fruite-categorie">
+                                    <h4>Price Range</h4>
+                                    <ul class="list-unstyled price-range">
                                         <li>
-                                            <div class="d-flex justify-content-between fruite-name">
-                                                <a href="#">🌵 Saguaro </a>
-                                                <span>(3)</span>
+                                            <div class="d-flex justify-content-between">
+                                                <a class="nav-item nav-link" style="cursor: pointer;"
+                                                    (click)="filterByPriceRange('')">🌵 All</a>
                                             </div>
                                         </li>
                                         <li>
-                                            <div class="d-flex justify-content-between fruite-name">
-                                                <a href="#">🌵 Barrel</a>
-                                                <span>(5)</span>
+                                            <div class="d-flex justify-content-between">
+                                                <a class="nav-item nav-link" style="cursor: pointer;"
+                                                    (click)="filterByPriceRange('under5')">🌵 Under $5</a>
                                             </div>
                                         </li>
                                         <li>
-                                            <div class="d-flex justify-content-between fruite-name">
-                                                <a href="#">🌵 Prickly Pear</a>
-                                                <span>(2)</span>
+                                            <div class="d-flex justify-content-between">
+                                                <a class="nav-item nav-link" style="cursor: pointer;"
+                                                    (click)="filterByPriceRange('5to10')">🌵 $5 - $10</a>
                                             </div>
                                         </li>
                                         <li>
-                                            <div class="d-flex justify-content-between fruite-name">
-                                                <a href="#">🌵 Christmas</a>
-                                                <span>(8)</span>
+                                            <div class="d-flex justify-content-between">
+                                                <a class="nav-item nav-link" style="cursor: pointer;"
+                                                    (click)="filterByPriceRange('10to20')">🌵 $10 - $20</a>
                                             </div>
                                         </li>
                                         <li>
-                                            <div class="d-flex justify-content-between fruite-name">
-                                                <a href="#">🌵 Fishhook</a>
-                                                <span>(5)</span>
+                                            <div class="d-flex justify-content-between">
+                                                <a class="nav-item nav-link" style="cursor: pointer;"
+                                                    (click)="filterByPriceRange('20to50')">🌵 $20 - $50</a>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="d-flex justify-content-between">
+                                                <a class="nav-item nav-link" style="cursor: pointer;"
+                                                    (click)="filterByPriceRange('50to100')">🌵 $50 - $100</a>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="d-flex justify-content-between">
+                                                <a class="nav-item nav-link" style="cursor: pointer;"
+                                                    (click)="filterByPriceRange('above100')">🌵 Above $100</a>
                                             </div>
                                         </li>
                                     </ul>
@@ -70,6 +85,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-lg-9">
                         <div class="row g-4 justify-content-center">
 

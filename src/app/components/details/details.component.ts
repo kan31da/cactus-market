@@ -8,7 +8,7 @@ import { AsyncPipe, CurrencyPipe, DatePipe, NgClass, NgIf } from '@angular/commo
 import { User } from '../../types/user';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Review } from '../../types/review';
-import { map, Observable, of } from 'rxjs';
+import { filter, first, map, Observable, of, tap } from 'rxjs';
 import { ReviewService } from '../../services/review.service';
 import { CartService } from '../../services/cart.service';
 
@@ -24,6 +24,9 @@ export class DetailsComponent implements OnInit {
 
     reviews$: Observable<Review[]> = of([]);
     reviewForm: FormGroup;
+
+    isEditMode = signal<boolean>(false);
+    editReviewId = signal<string>('');
 
     constructor(
         private route: ActivatedRoute,
@@ -42,10 +45,6 @@ export class DetailsComponent implements OnInit {
 
     get userData(): User | null | undefined {
         return this.authService.currentUserSig();
-    }
-
-    ngOnChanges() {
-        //TODO TODO TODO
     }
 
     ngOnInit(): void {
@@ -72,13 +71,13 @@ export class DetailsComponent implements OnInit {
 
         if (this.cactus && this.userData.uid !== this.cactus()?.userId) {
 
-            const newCactus = { ...this.cactus()! }; 
+            const newCactus = { ...this.cactus()! };
 
             const existingCactus = this.cartService.cart.cactuses.find(x => x._id === newCactus._id);
-        
-            if (existingCactus) {                
+
+            if (existingCactus) {
                 existingCactus.quantity += newCactus.quantity!;
-            } else {                
+            } else {
                 this.cartService.cart.cactuses.push(newCactus);
             }
 
@@ -115,16 +114,54 @@ export class DetailsComponent implements OnInit {
                 cactusId: this.cactus()?._id
             };
 
-            this.reviewService.addReview(formData).subscribe({
-                next: () => {
-                    this.reviewForm.reset();
-                    this.toastr.info('Thank you for your review! Your feedback has been posted successfully.', 'Review Submitted');
-                }
-            });
+            if (this.isEditMode()) {
+                this.reviewService.updateReview(this.editReviewId(), formData).subscribe({
+                    next: () => {
+                        this.clearFormValues();
+                        this.toastr.info('Thank you for updating your review! Your feedback has been successfully modified.', 'Review Updated');
+                    }
+                });
+            }
+            else {
+
+                this.reviewService.addReview(formData).subscribe({
+                    next: () => {
+                        this.clearFormValues();
+                        this.toastr.info('Thank you for your review! Your feedback has been posted successfully.', 'Review Submitted');
+                    }
+                });
+            }
         } else {
             this.toastr.error('Oops! Something went wrong. Please try again later.', 'Error Submitting Review');
         }
     }
+
+    private clearFormValues(): void {
+        this.isEditMode.set(false);
+        this.editReviewId.set('');
+        this.reviewForm.reset();
+    }
+
+    clearEditMode(): void {
+        this.clearFormValues();
+    }
+
+    editReview(reviewId: string) {
+
+        const editReview$ = this.reviews$.pipe(
+            first(),
+            map((reviews) => reviews.find((review) => review._id === reviewId))
+        );
+
+        editReview$.subscribe((review) => {
+            if (review) {
+                this.isEditMode.set(true);
+                this.editReviewId.set(reviewId)
+                this.reviewForm.patchValue({ ...review, });
+            }
+        });
+    }
+
     removeReview(reviewId: string) {
         this.reviewService.deleteReview(reviewId).subscribe({
             next: () => {
@@ -142,12 +179,12 @@ export class DetailsComponent implements OnInit {
         }
     }
 
-    formatDateToReadableString(): string {
-        const date = new Date(Date.now());
-        return date.toLocaleDateString('en-US', {
-            day: '2-digit',
-            month: 'long',
-            year: 'numeric',
-        });
-    }
+    // formatDateToReadableString(): string {
+    //     const date = new Date(Date.now());
+    //     return date.toLocaleDateString('en-US', {
+    //         day: '2-digit',
+    //         month: 'long',
+    //         year: 'numeric',
+    //     });
+    // }
 }

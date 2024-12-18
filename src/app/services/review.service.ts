@@ -41,9 +41,9 @@ export class ReviewService {
             .pipe(map(() => reviewsRef.id));
     }
 
-    updateReview(id: string, data: Partial<Review>): Promise<void> {
+    updateReview(id: string, data: Partial<Review>): Observable<void> {
         const reviewDocRef = doc(this.firestore, `${this.reviewsCollectionName}/${id}`);
-        return updateDoc(reviewDocRef, data);
+        return from(updateDoc(reviewDocRef, data));
     }
 
     deleteReview(id: string): Observable<void> {

@@ -90,6 +90,13 @@
                                         </div>
                                     </div>
                                     @if(userData?.uid === review.uid){
+                                    <td><button (click)="editReview(review._id!)"
+                                            class="table-responsive table btn btn-md rounded-circle bg-light border mt-4">
+                                            <i class="fa fa-edit" style="color:#81C408"
+                                                onMouseOver="this.style.color='#FFB524'"
+                                                onMouseOut="this.style.color='#81C408'"></i>
+                                        </button>
+                                    </td>
                                     <td>
                                         <button (click)="removeReview(review._id!)"
                                             class="table-responsive table btn btn-md rounded-circle bg-light border mt-4">
@@ -103,38 +110,38 @@
                         </div>
                     </div>
                     @if (canAddPost()){
-                    <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
-                        <h4 class="mb-5 fw-bold">Leave a Reply</h4>
-                        <div class="row g-4">
-                            <div class="col-lg-6">
-                                <div class="border-bottom rounded border border-secondary">
-                                    <!-- <input type="text" formControlName="name" name="name" id="name"
-                                        class="form-control border-0 me-4" placeholder="Your Name *">
-                                        
+                    <h4 class="mb-5 fw-bold">Leave a Reply</h4>
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <div class="border-bottom rounded border border-secondary">
+                                <!-- <input type="text" formControlName="name" name="name" id="name"
+                                    class="form-control border-0 me-4" placeholder="Your Name *">
+                                    
                                     <div *ngIf="reviewForm.get('name')?.invalid && (reviewForm.get('name')?.touched || reviewForm.get('name')?.dirty)"
-                                        class="text-danger">
-                                        Name is required.
-                                    </div> -->
+                                    class="text-danger">
+                                    Name is required.
+                                </div> -->
 
-                                    <input class="form-control border-0 me-4" type="text" id="username"
-                                        value={{userData?.displayName}} readonly>
-                                </div>
+                                <input class="form-control border-0 me-4" type="text" id="username"
+                                    value={{userData?.displayName}} readonly>
                             </div>
+                        </div>
 
-                            <div class="col-lg-6">
-                                <div class="border-bottom rounded border border-secondary">
-                                    <!-- <input type="email" formControlName="email" name="email" id="email"
-                                        class="form-control border-0" placeholder="Your Email *">
-                                    <div *ngIf="reviewForm.get('email')?.invalid && (reviewForm.get('email')?.touched || reviewForm.get('email')?.dirty)"
-                                        class="text-danger">
-                                        A valid email is required.
-                                    </div> -->
+                        <div class="col-lg-6">
+                            <div class="border-bottom rounded border border-secondary">
+                                <!-- <input type="email" formControlName="email" name="email" id="email"
+                                class="form-control border-0" placeholder="Your Email *">
+                                <div *ngIf="reviewForm.get('email')?.invalid && (reviewForm.get('email')?.touched || reviewForm.get('email')?.dirty)"
+                                class="text-danger">
+                                A valid email is required.
+                            </div> -->
 
-                                    <input class="form-control border-0 me-4" type="email" id="email"
-                                        value={{userData?.email}} readonly>
-                                </div>
+                                <input class="form-control border-0 me-4" type="email" id="email"
+                                    value={{userData?.email}} readonly>
                             </div>
+                        </div>
 
+                        <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
                             <div class="col-lg-12">
                                 <div class="border-bottom rounded my-4 border border-secondary">
                                     <textarea formControlName="review" name="review" id="review"
@@ -152,12 +159,19 @@
                                     <button type="submit"
                                         class="btn border border-secondary text-primary rounded-pill px-4 py-3"
                                         [disabled]="reviewForm.invalid">
-                                        Post Comment
+                                        {{isEditMode() ? 'Edit Comment' : 'Post Comment'}}
                                     </button>
+                                    
+                                    @if (isEditMode()) {
+                                    <button type="reset" (click)="clearEditMode()"
+                                        class="btn border border-secondary text-primary rounded-pill px-4 py-3">
+                                        Cancel
+                                    </button>
+                                    }
                                 </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                     }
                     }
                 </div>
