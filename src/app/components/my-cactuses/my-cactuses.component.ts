@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Cactus } from '../../types/cactus';
 import { CactusService } from '../../services/cactus.service';
 import { AuthService } from '../../services/auth.service';
@@ -20,7 +20,8 @@ export class MyCactusesComponent {
     constructor(
         private cactusService: CactusService,
         private authService: AuthService,
-        private toastr: ToastrService) { }
+        private toastr: ToastrService,
+        private router: Router) { }
 
     ngOnInit(): void {
         this.cactuses$ = this.cactusService.getCactusByUserID(this.authService.currentUserSig()?.uid!);
@@ -32,5 +33,9 @@ export class MyCactusesComponent {
                 this.toastr.warning(`"${cactusName}" has been removed from your collection.`, 'Cactus Removed!');
             }
         });
+    }
+
+    editCactus(cactusId: string) {
+        this.router.navigate([`add-cactus/${cactusId}`]);
     }
 }

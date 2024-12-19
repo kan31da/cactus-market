@@ -11,6 +11,7 @@
                         <th scope="col">Products</th>
                         <th scope="col">Name</th>
                         <th scope="col">Price</th>
+                        <th scope="col">Edit Cactus</th>
                         <th scope="col">Remove Cactus</th>
                     </tr>
                 </thead>
@@ -33,6 +34,12 @@
                         </td>
                         <td>
                             <p class="mb-0 mt-4">{{cactus.price | currency}}</p>
+                        </td>
+                        <td><button (click)="editCactus(cactus._id)"
+                                class="btn btn-md rounded-circle bg-light border mt-4">
+                                <i class="fa fa-edit" style="color:#81C408" onMouseOver="this.style.color='#FFB524'"
+                                    onMouseOut="this.style.color='#81C408'"></i>
+                            </button>
                         </td>
                         <td>
                             <button (click)="deleteCactus(cactus._id, cactus.cactusName)"
