@@ -4,25 +4,40 @@ import { AuthService } from '../../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { RouterLink } from '@angular/router';
 import { User } from '../../types/user';
-import { CurrencyPipe, NgClass } from '@angular/common';
+import { CurrencyPipe, NgClass, NgIf } from '@angular/common';
 import { CartService } from '../../services/cart.service';
 import { DEFAULT_FLAT_RATE } from '../../utils/constants';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+
+
 
 @Component({
     selector: 'app-cart',
     standalone: true,
-    imports: [RouterLink, NgClass, CurrencyPipe],
+    imports: [RouterLink, NgClass, CurrencyPipe, NgIf, ReactiveFormsModule],
     templateUrl: './cart.component.html',
     styleUrl: './cart.component.css'
 })
 export class CartComponent {
+    public form: FormGroup;
     checkOutMessage = signal<string>('');
     isCheckOut = signal<boolean>(false);
+    isFinalCheckOut = signal<boolean>(false);
+
 
     constructor(
         private authService: AuthService,
         private toastr: ToastrService,
-        private cartService: CartService) { }
+        private cartService: CartService,
+        private fb: FormBuilder) {
+        this.form = this.fb.nonNullable.group({
+            firstName: ['', [Validators.required, Validators.minLength(2)]],
+            lastName: ['', [Validators.required, Validators.minLength(2)]],
+            address: ['', Validators.required],
+            mobile: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
+            orderNotes: ['']
+        });
+    }
 
     ngOnInit(): void {
         this.checkOutMessage.set('');
@@ -32,7 +47,7 @@ export class CartComponent {
         return this.authService.currentUserSig();
     }
     get cactusesData(): Cactus[] {
-        return this.cartService.cart.cactuses;
+        return this.cartService.cart?.cactuses ?? [];
     }
     get cactusesDataGetLength(): boolean {
         const cart = this.cartService.cart;
@@ -117,20 +132,29 @@ export class CartComponent {
     }
 
     proceedCheckout(): void {
+        this.isFinalCheckOut.set(true);
+    }
+    cancelOrder(): void {
+        this.isFinalCheckOut.set(false);
+        this.form.reset();
+    }
 
-        const total = this.getPriceWithShippingTaxes();
-        const count = this.cartService.cactusesDataGetQuantity;
+    onSubmit(): void {
+        if (this.form.valid) {
+            const total = this.getPriceWithShippingTaxes();
+            const count = this.cartService.cactusesDataGetQuantity;
 
-        this.cartService.cart.cactuses = [];
-        this.cartService.updateCart(this.cartService.cart?._id!, this.cartService.cart)
-            .subscribe({
-                next: () => {
-                    this.isCheckOut.set(true);
+            this.cartService.cart.cactuses = [];
+            this.cartService.updateCart(this.cartService.cart?._id!, this.cartService.cart)
+                .subscribe({
+                    next: () => {
+                        this.isCheckOut.set(true);
+                        this.isFinalCheckOut.set(false);
 
-                    this.checkOutMessage.set(`Successfully ordered ${count} cactus(es) for ${this.userData?.email}. Total:$ ${total.toFixed(2)} 'Your order has been processed.'`);
-                    this.toastr.success(`Successfully ordered ${count} cactus(es) for ${this.userData?.email}. Total:$ ${total.toFixed(2)}`, 'Your order has been processed.');
-                }
-            });
-
+                        this.checkOutMessage.set(`Successfully ordered ${count} cactus(es) for ${this.userData?.email}. Total:$ ${total.toFixed(2)} 'Your order has been processed.'`);
+                        this.toastr.success(`Successfully ordered ${count} cactus(es) for ${this.userData?.email}. Total:$ ${total.toFixed(2)}`, 'Your order has been processed.');
+                    }
+                });
+        }
     }
 }

@@ -15,6 +15,131 @@
             </div>
         </div>
         }@else {
+        @if (isFinalCheckOut()) {
+        <div class="container-fluid py-5">
+            <div class="container py-5">
+                <h1 class="mb-4">Billing details</h1>
+                <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                    <div class="row g-5">
+                        <div class="col-md-12 col-lg-6 col-xl-7">
+                            <div class="row">
+                                <div class="col-md-12 col-lg-6">
+                                    <div class="form-item w-100">
+                                        <label class="form-label my-3">First Name<sup>*</sup></label>
+                                        <input type="text" class="form-control" formControlName="firstName">
+                                        <div *ngIf="form.get('firstName')?.invalid && form.get('firstName')?.touched"
+                                            class="text-danger">
+                                            First Name is required and must be at least 2 characters.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-lg-6">
+                                    <div class="form-item w-100">
+                                        <label class="form-label my-3">Last Name<sup>*</sup></label>
+                                        <input type="text" class="form-control" formControlName="lastName">
+                                        <div *ngIf="form.get('lastName')?.invalid && form.get('lastName')?.touched"
+                                            class="text-danger">
+                                            Last Name is required and must be at least 2 characters.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-item">
+                                <label class="form-label my-3">Address <sup>*</sup></label>
+                                <input type="text" class="form-control" formControlName="address">
+                                <div *ngIf="form.get('address')?.invalid && form.get('address')?.touched"
+                                    class="text-danger">
+                                    Address is required.
+                                </div>
+                            </div>
+                            <div class="form-item">
+                                <label class="form-label my-3">Mobile<sup>*</sup></label>
+                                <input type="tel" class="form-control" formControlName="mobile">
+                                <div *ngIf="form.get('mobile')?.invalid && form.get('mobile')?.touched"
+                                    class="text-danger">
+                                    Mobile is required and must be a 10-digit number.
+                                </div>
+                            </div>
+                            <div class="form-item">
+                                <hr>
+                            </div>
+                            <div class="form-item">
+                                <textarea name="text" class="form-control" spellcheck="false" cols="30" rows="11"
+                                    placeholder="Order Notes (Optional)" formControlName="orderNotes"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-lg-6 col-xl-5">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Products</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Price</th>
+                                            <th scope="col">Quantity</th>
+                                            <th scope="col">Total</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        @for (cactus of cactusesData; track $index) {
+                                        <tr>
+                                            <th scope="row">
+                                                <div class="d-flex align-items-center mt-2">
+                                                    <img src={{cactus.image}} class="img-fluid rounded-circle"
+                                                        style="width: 90px; height: 90px;" alt="">
+                                                </div>
+                                            </th>
+                                            <td class="py-5">{{cactus.cactusName}}</td>
+                                            <td class="py-5">{{cactus.price | currency}}</td>
+                                            <td class="py-5">{{cactus.quantity}}</td>
+                                            <td class="py-5">{{getPriceForCurrentCactus(cactus._id) | currency}}</td>
+                                        </tr>
+                                        }
+                                        <tr>
+                                            <th scope="row"> </th>
+                                            <td class="py-5"></td>
+                                            <td class="py-5"></td>
+                                            <td class="py-5">
+                                                <p class="mb-0 text-dark py-3">Subtotal</p>
+                                                <p class="mb-0 text-dark py-3">Flat rate:</p>
+                                                <p class="mb-0 text-dark text-uppercase py-3">TOTAL</p>
+                                            </td>
+                                            <td class="py-5">
+                                                <div class="py-3 border-bottom border-top">
+                                                    <p class="mb-0 text-dark">{{getPrice() | currency}}</p>
+                                                </div>
+                                                <div class="py-3 border-bottom border-top">
+                                                    <p class="mb-0 text-dark">{{ flatRate | currency}}</p>
+                                                </div>
+                                                <div class="py-3 border-bottom border-top">
+                                                    <p class="mb-0 text-dark">{{(isCactusListEmpty() ? 0 :
+                                                        getPriceWithShippingTaxes()) | currency }}</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row g-4 text-center align-items-center justify-content-center pt-4">
+                                <button type="submit"
+                                    class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary"
+                                    [disabled]="form.invalid" [ngClass]="{'disabled-link': form.invalid}">
+                                    Place Order
+                                </button>
+                            </div>
+                            <hr>
+                            <div class="row g-4 text-center align-items-center justify-content-center pt-4">
+                                <button (click)="cancelOrder()" type="button"
+                                    class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary">Cancel
+                                    Order</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        }@else {
 
         <div class="table-responsive">
             <table class="table">
@@ -114,6 +239,7 @@
                 </div>
             </div>
         </div>
+        }
         }
     </div>
 </div>
